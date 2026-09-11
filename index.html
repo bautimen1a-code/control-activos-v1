@@ -82,6 +82,88 @@
   .loading,.error{text-align:center;padding:24px;font-size:13px;letter-spacing:1px;}
   .error{color:var(--rojo);}
   footer{text-align:center;padding:14px;font-size:10px;color:#7a7360;letter-spacing:1.5px;border-top:1px solid var(--gris-claro);}
+
+  /* LISTA DE RESPONSABLES */
+  .lista-responsables{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:4px 0;
+  }
+  .lista-responsables .titulo-lista{
+    font-size:11px;
+    color:#5c5644;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:6px 4px;
+    border-bottom:1px solid #c9c2a8;
+    margin-bottom:4px;
+  }
+  .resp-item{
+    background:#f4f2e8;
+    border:1px solid var(--verde-claro);
+    border-left:5px solid var(--verde-mil);
+    padding:12px 14px;
+    cursor:pointer;
+    transition:all .15s ease;
+    border-radius:2px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+  .resp-item:hover, .resp-item:active{
+    background:var(--verde-claro);
+    border-left-color:var(--arena);
+  }
+  .resp-item:hover .resp-item-nombre,
+  .resp-item:hover .resp-item-cargo,
+  .resp-item:active .resp-item-nombre,
+  .resp-item:active .resp-item-cargo{
+    color:#fff;
+  }
+  .resp-item-info{flex:1;min-width:0;}
+  .resp-item-nombre{
+    font-size:13px;
+    font-weight:700;
+    color:var(--verde-osc);
+    letter-spacing:.3px;
+    word-break:break-word;
+  }
+  .resp-item-cargo{
+    font-size:11px;
+    color:#5c5644;
+    margin-top:3px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    word-break:break-word;
+  }
+  .resp-item-flecha{
+    font-size:20px;
+    color:var(--arena);
+    flex-shrink:0;
+    font-weight:700;
+  }
+  /* BOTÓN VOLVER */
+  .btn-volver{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--verde-osc);
+    color:#f2f0e5;
+    border:1px solid var(--arena);
+    padding:8px 14px;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:3px;
+    margin-bottom:14px;
+    font-weight:600;
+  }
+  .btn-volver:hover{background:var(--verde-mil);}
+
+
 </style>
 </head>
 <body>
@@ -107,11 +189,10 @@
 
 <script>
 /* ============================================================
-   🔴 AQUÍ PEGA TU URL DE APPS SCRIPT (Paso 1.4)
+   CONFIGURACIÓN
    ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbyUwEQTPO-KuRhBrioJPXz9Im7H2OVRbA3yiPsSuAcs_VlSPO8IvT8wsNZEBv64ki_B/exec";
 
-/* IDs de los 3 Google Sheets */
 const FUENTES = {
   fijos:     "1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w",
   fungibles: "15m3IcYLXZPd70tbXkWR9fx7WT6DXVNPwIzxH--12-Ny",
@@ -144,9 +225,7 @@ function parseCSV(text){
 
 function limpiarHeader(h){
   return h.toString().trim().toUpperCase()
-    .replace(/\./g,"")
-    .replace(/\s+/g," ")
-    .trim();
+    .replace(/\./g,"").replace(/\s+/g," ").trim();
 }
 
 function toObjects(rows){
@@ -178,17 +257,14 @@ async function cargar(key, fileId){
       method: "GET", cache: "no-store", redirect: "follow"
     });
     if(!res.ok) throw new Error("HTTP " + res.status);
-
     let texto = await res.text();
-    if(texto.trim().startsWith("<")) throw new Error("El servidor devolvió HTML (revisar permisos Apps Script)");
+    if(texto.trim().startsWith("<")) throw new Error("HTML en respuesta");
     if(texto.trim().startsWith("{")){
       try{ const j = JSON.parse(texto); if(j.error) throw new Error(j.error); }catch(_){}
     }
-
     const rows = parseCSV(texto);
     DATA[key] = toObjects(rows);
     console.log(`✔ ${key}: ${DATA[key].length} registros`);
-    if(DATA[key][0]) console.log(`   Columnas ${key}:`, Object.keys(DATA[key][0]));
   }catch(e){
     console.warn(`✖ Error cargando ${key}:`, e.message);
     DATA[key] = [];
@@ -225,30 +301,123 @@ function renderEstado(val){
 }
 
 /* ============================================================
-   BÚSQUEDA (busca en todos los campos)
+   IDENTIFICAR RESPONSABLE Y CARGO DE UN REGISTRO
    ============================================================ */
-function buscar(termino){
-  const t = norm(termino);
-  if(t.length < 2){
-    return { fijos:[], fungibles:[], sector:[], responsable:null, cargo:null };
-  }
-  const coincide = (obj) => Object.values(obj).some(v => norm(v).includes(t));
-  const fijos = DATA.fijos.filter(coincide);
-  const fungibles = DATA.fungibles.filter(coincide);
-  const sector = DATA.sector.filter(coincide);
-
-  const primero = fijos[0] || fungibles[0] || sector[0];
-  let responsable = null, cargo = null;
-  if(primero){
-    responsable = primero["GRADO NOMBRES"] || primero["RESPONSABLE"] || primero["NOMBRES"] || null;
-    cargo = primero["CARGO"] || null;
-  }
-  return { fijos, fungibles, sector, responsable, cargo };
+function getResponsable(obj){
+  return (obj["GRADO NOMBRES"] || obj["RESPONSABLE"] || obj["NOMBRES"] || "").trim();
+}
+function getCargo(obj){
+  return (obj["CARGO"] || "").trim();
 }
 
 /* ============================================================
-   RENDER
+   PASO 1: BUSCAR RESPONSABLES ÚNICOS
    ============================================================ */
+function buscarResponsables(termino){
+  const t = norm(termino);
+  if(t.length < 2) return [];
+
+  // Mapa para agrupar por nombre único (normalizado)
+  const mapa = new Map();
+
+  function escanear(lista){
+    lista.forEach(o => {
+      const nombreRaw = getResponsable(o);
+      if(!nombreRaw) return;
+      if(!norm(nombreRaw).includes(t)) return;
+
+      const clave = norm(nombreRaw);
+      if(!mapa.has(clave)){
+        mapa.set(clave, {
+          nombre: nombreRaw,
+          cargo: getCargo(o),
+          fijos: 0,
+          fungibles: 0,
+          sector: 0
+        });
+      }
+    });
+  }
+
+  escanear(DATA.fijos);
+  escanear(DATA.fungibles);
+  escanear(DATA.sector);
+
+  // Contar bienes de cada responsable
+  const lista = Array.from(mapa.values());
+  lista.forEach(r => {
+    const clave = norm(r.nombre);
+    r.fijos = DATA.fijos.filter(o => norm(getResponsable(o)) === clave).length;
+    r.fungibles = DATA.fungibles.filter(o => norm(getResponsable(o)) === clave).length;
+    r.sector = DATA.sector.filter(o => norm(getResponsable(o)) === clave).length;
+  });
+
+  // Ordenar alfabéticamente
+  lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
+  return lista;
+}
+
+/* ============================================================
+   RENDER — PASO 1: LISTA DE RESPONSABLES
+   ============================================================ */
+function renderListaResponsables(termino){
+  const cont = document.getElementById("resultado");
+  const lista = buscarResponsables(termino);
+
+  if(norm(termino).length < 2){
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🎖️</div>
+      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+    </div>`;
+    return;
+  }
+
+  if(!lista.length){
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🔎</div>
+      NO SE ENCONTRARON RESPONSABLES PARA "<b>${esc(termino)}</b>"
+    </div>`;
+    return;
+  }
+
+  let html = `<div class="lista-responsables">
+    <div class="titulo-lista">${lista.length} responsable(s) encontrado(s)</div>`;
+
+  lista.forEach((r, idx) => {
+    const total = r.fijos + r.fungibles + r.sector;
+    html += `
+      <div class="resp-item" data-idx="${idx}" onclick="seleccionarResponsable(${idx})">
+        <div class="resp-item-info">
+          <div class="resp-item-nombre">🎖️ ${esc(r.nombre)}</div>
+          <div class="resp-item-cargo">${esc(r.cargo || "SIN CARGO")} · ${total} bien(es)</div>
+        </div>
+        <div class="resp-item-flecha">›</div>
+      </div>`;
+  });
+
+  html += `</div>`;
+  cont.innerHTML = html;
+
+  // Guardar en variable global para uso del onclick
+  window.__listaActual = lista;
+}
+
+/* ============================================================
+   RENDER — PASO 2: DETALLE DEL RESPONSABLE SELECCIONADO
+   ============================================================ */
+function seleccionarResponsable(idx){
+  const lista = window.__listaActual || [];
+  const responsable = lista[idx];
+  if(!responsable) return;
+
+  const clave = norm(responsable.nombre);
+  const fijos     = DATA.fijos.filter(o => norm(getResponsable(o)) === clave);
+  const fungibles = DATA.fungibles.filter(o => norm(getResponsable(o)) === clave);
+  const sector    = DATA.sector.filter(o => norm(getResponsable(o)) === clave);
+
+  renderDetalle(responsable, { fijos, fungibles, sector });
+}
+
 function agruparPorOficina(lista){
   const mapa = new Map();
   lista.forEach(o => {
@@ -291,37 +460,18 @@ function tablaHTML(titulo, lista, columnas){
   return html;
 }
 
-function renderResultado(termino){
+function renderDetalle(responsable, datos){
   const cont = document.getElementById("resultado");
-  const res = buscar(termino);
 
-  if(norm(termino).length < 2){
-    cont.innerHTML = `<div class="info-inicial">
-      <div class="icon">🎖️</div>
-      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+  let html = `
+    <button class="btn-volver" onclick="volverALista()">← Volver a resultados</button>
+    <div class="resp-card">
+      <div class="nombre">🎖️ ${esc(responsable.nombre)}</div>
+      ${responsable.cargo ? `<div class="cargo">${esc(responsable.cargo)}</div>` : ``}
     </div>`;
-    return;
-  }
-
-  const totalReg = res.fijos.length + res.fungibles.length + res.sector.length;
-  if(totalReg === 0){
-    cont.innerHTML = `<div class="info-inicial">
-      <div class="icon">🔎</div>
-      NO SE ENCONTRARON REGISTROS PARA "<b>${esc(termino)}</b>"
-    </div>`;
-    return;
-  }
-
-  let html = "";
-  if(res.responsable){
-    html += `<div class="resp-card">
-      <div class="nombre">🎖️ ${esc(res.responsable)}</div>
-      ${res.cargo ? `<div class="cargo">${esc(res.cargo)}</div>` : ``}
-    </div>`;
-  }
 
   /* FIJOS */
-  html += tablaHTML("FIJOS", res.fijos, [
+  html += tablaHTML("FIJOS", datos.fijos, [
     {label:"CODIGOVSIAF", key:"CODIGOVSIAF"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"COSTO", key:"COSTO"},
@@ -329,7 +479,7 @@ function renderResultado(termino){
   ]);
 
   /* FUNGIBLES */
-  html += tablaHTML("FUNGIBLES", res.fungibles, [
+  html += tablaHTML("FUNGIBLES", datos.fungibles, [
     {label:"CÓDIGO", key:"CODIGO"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"VALOR TOTAL", key:"VALOR TOTAL"},
@@ -338,7 +488,7 @@ function renderResultado(termino){
   ]);
 
   /* SECTOR */
-  html += tablaHTML("SECTOR", res.sector, [
+  html += tablaHTML("SECTOR", datos.sector, [
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"},
@@ -346,6 +496,12 @@ function renderResultado(termino){
   ]);
 
   cont.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function volverALista(){
+  const input = document.getElementById("buscador");
+  renderListaResponsables(input.value);
 }
 
 /* ============================================================
@@ -379,7 +535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let timer;
   input.addEventListener("input", e => {
     clearTimeout(timer);
-    timer = setTimeout(() => renderResultado(e.target.value), 200);
+    timer = setTimeout(() => renderListaResponsables(e.target.value), 200);
   });
 });
 </script>
