@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Activos Fijos y Fungibles</title>
+<style>
+  :root{
+    --verde-mil:#2f3e2e; --verde-osc:#1c261b; --verde-claro:#4a5d47;
+    --gris:#3a3a3a; --gris-claro:#d9d9d9; --arena:#c9c2a8;
+    --rojo:#c0392b; --texto:#1a1a1a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#e8e6dc;color:var(--texto);font-size:14px;}
+  .main-header{
+    background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
+    color:#f2f0e5;padding:14px 12px;text-align:center;
+    border-bottom:3px solid var(--arena);position:sticky;top:0;z-index:50;
+  }
+  .main-header h1{font-size:16px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;}
+  .main-header small{display:block;font-size:10px;color:var(--arena);letter-spacing:2px;margin-top:4px;}
+  .search-wrap{
+    padding:16px 12px;background:var(--verde-osc);
+    position:sticky;top:56px;z-index:49;border-bottom:1px solid var(--arena);
+  }
+  .search-wrap input{
+    width:100%;padding:12px 14px;font-size:15px;
+    border:2px solid var(--arena);background:#f7f5ea;color:var(--texto);
+    border-radius:3px;outline:none;text-transform:uppercase;
+  }
+  .search-wrap input:focus{border-color:#e0d9b8;box-shadow:0 0 0 2px rgba(201,194,168,.3);}
+  .search-hint{text-align:center;font-size:11px;color:var(--arena);margin-top:6px;letter-spacing:1px;}
+  #resultado{padding:12px;}
+  .resp-card{
+    background:var(--gris);color:#fff;padding:12px 14px;
+    border-left:5px solid var(--arena);margin-bottom:16px;border-radius:2px;
+  }
+  .resp-card .nombre{font-size:15px;font-weight:700;letter-spacing:.5px;}
+  .resp-card .cargo{
+    font-size:12px;color:var(--arena);margin-top:3px;
+    text-transform:uppercase;letter-spacing:1px;
+  }
+  .tabla-seccion{margin-bottom:22px;border:1px solid var(--verde-claro);border-radius:3px;overflow:hidden;background:#f4f2e8;}
+  .tabla-titulo{
+    background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
+    color:#f2f0e5;padding:8px 12px;font-size:13px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .tabla-titulo .count{background:var(--arena);color:var(--verde-osc);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;}
+  .oficina-tag{
+    background:#e6e2cf;color:var(--verde-osc);font-size:11px;font-weight:700;
+    padding:5px 10px;letter-spacing:1px;text-transform:uppercase;
+    border-bottom:1px solid var(--verde-claro);border-top:1px solid var(--verde-claro);
+  }
+  .tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px;}
+  thead th{
+    background:var(--verde-claro);color:#fff;text-align:left;
+    padding:7px 8px;font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+    border-right:1px solid rgba(255,255,255,.15);
+  }
+  tbody td{
+    padding:6px 8px;border-bottom:1px solid var(--gris-claro);
+    border-right:1px solid #eceae0;vertical-align:top;word-break:break-word;
+  }
+  tbody tr:nth-child(even){background:#efeddf;}
+  tbody tr:hover{background:#e2dfc9;}
+  .pendiente{color:var(--rojo);font-weight:700;text-transform:uppercase;}
+  .no-data{
+    background:#f0eee2;color:#7a7360;text-align:center;padding:20px 12px;
+    font-style:italic;font-size:12px;letter-spacing:1px;text-transform:uppercase;
+    border-top:1px solid var(--verde-claro);
+  }
+  .estado-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;}
+  .estado-malo{background:#8b3a2e;}
+  .estado-regular{background:#8a7a3a;}
+  .estado-bueno{background:#3d6b3a;}
+  .estado-pendiente{background:var(--rojo);}
+  .info-inicial{text-align:center;padding:40px 20px;color:#5c5644;font-size:13px;letter-spacing:1px;}
+  .info-inicial .icon{font-size:38px;margin-bottom:10px;opacity:.5;}
+  .loading,.error{text-align:center;padding:24px;font-size:13px;letter-spacing:1px;}
+  .error{color:var(--rojo);}
+  footer{text-align:center;padding:14px;font-size:10px;color:#7a7360;letter-spacing:1.5px;border-top:1px solid var(--gris-claro);}
+</style>
+</head>
+<body>
+
+<header class="main-header">
+  <h1>Control de Activos Fijos y Fungibles</h1>
+  <small>DIV-10 · SISTEMA DE CONSULTA</small>
+</header>
+
+<div class="search-wrap">
+  <input type="text" id="buscador" placeholder="🔍 Buscar por Nombres y Apellidos..." autocomplete="off">
+  <div class="search-hint">Escriba el nombre del responsable</div>
+</div>
+
+<div id="resultado">
+  <div class="info-inicial">
+    <div class="icon">🎖️</div>
+    INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+  </div>
+</div>
+
+<footer>SISTEMA DE CONTROL PATRIMONIAL — DIV-10</footer>
+
+<script>
+/* ============================================================
+   🔴 AQUÍ PEGA TU URL DE APPS SCRIPT (Paso 1.4)
+   ============================================================ */
+const API_URL = "https://script.google.com/macros/s/AKfycbyUwEQTPO-KuRhBrioJPXz9Im7H2OVRbA3yiPsSuAcs_VlSPO8IvT8wsNZEBv64ki_B/exec";
+
+/* IDs de los 3 Google Sheets */
+const FUENTES = {
+  fijos:     "1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w",
+  fungibles: "15m3IcYLXZPd70tbXkWR9fx7WT6DXVNPwIzxH--12-Ny",
+  sector:    "1aWAJYEUz313JgcAsPYYGM2wQLUjP_9LCsiIe2lAQ5so"
+};
+
+/* ============================================================
+   PARSEO CSV
+   ============================================================ */
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i], n = text[i+1];
+    if(inQuotes){
+      if(c === '"' && n === '"'){ field += '"'; i++; }
+      else if(c === '"'){ inQuotes = false; }
+      else field += c;
+    } else {
+      if(c === '"') inQuotes = true;
+      else if(c === ','){ row.push(field); field=""; }
+      else if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=""; }
+      else if(c === '\r'){ }
+      else field += c;
+    }
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(v => v.trim() !== ""));
+}
+
+function limpiarHeader(h){
+  return h.toString().trim().toUpperCase()
+    .replace(/\./g,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function toObjects(rows){
+  if(!rows.length) return [];
+  const headers = rows[0].map(limpiarHeader);
+  return rows.slice(1).map(r => {
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (r[i] || "").toString().trim());
+    return obj;
+  });
+}
+
+/* ============================================================
+   CARGA DE DATOS
+   ============================================================ */
+const DATA = { fijos: [], fungibles: [], sector: [] };
+
+async function cargarTodo(){
+  await Promise.all([
+    cargar("fijos", FUENTES.fijos),
+    cargar("fungibles", FUENTES.fungibles),
+    cargar("sector", FUENTES.sector)
+  ]);
+}
+
+async function cargar(key, fileId){
+  try{
+    const res = await fetch(`${API_URL}?fileId=${fileId}`, {
+      method: "GET", cache: "no-store", redirect: "follow"
+    });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+
+    let texto = await res.text();
+    if(texto.trim().startsWith("<")) throw new Error("El servidor devolvió HTML (revisar permisos Apps Script)");
+    if(texto.trim().startsWith("{")){
+      try{ const j = JSON.parse(texto); if(j.error) throw new Error(j.error); }catch(_){}
+    }
+
+    const rows = parseCSV(texto);
+    DATA[key] = toObjects(rows);
+    console.log(`✔ ${key}: ${DATA[key].length} registros`);
+    if(DATA[key][0]) console.log(`   Columnas ${key}:`, Object.keys(DATA[key][0]));
+  }catch(e){
+    console.warn(`✖ Error cargando ${key}:`, e.message);
+    DATA[key] = [];
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function norm(s){
+  return (s || "").toString().toUpperCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ").trim();
+}
+function esc(s){
+  return (s || "").toString()
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function renderValor(val){
+  const v = (val || "").toString().trim();
+  if(!v) return "—";
+  if(v.toUpperCase().includes("PENDIENTE")) return `<span class="pendiente">${esc(v)}</span>`;
+  return esc(v);
+}
+function renderEstado(val){
+  const v = (val || "").toString().trim();
+  if(!v) return "—";
+  if(v.toUpperCase().includes("PENDIENTE")) return `<span class="estado-badge estado-pendiente">${esc(v)}</span>`;
+  const up = v.toUpperCase();
+  let cls = "estado-regular";
+  if(up.includes("MALO")) cls = "estado-malo";
+  else if(up.includes("BUENO") || up.includes("ÓPTIMO") || up.includes("OPTIMO")) cls = "estado-bueno";
+  return `<span class="estado-badge ${cls}">${esc(v)}</span>`;
+}
+
+/* ============================================================
+   BÚSQUEDA (busca en todos los campos)
+   ============================================================ */
+function buscar(termino){
+  const t = norm(termino);
+  if(t.length < 2){
+    return { fijos:[], fungibles:[], sector:[], responsable:null, cargo:null };
+  }
+  const coincide = (obj) => Object.values(obj).some(v => norm(v).includes(t));
+  const fijos = DATA.fijos.filter(coincide);
+  const fungibles = DATA.fungibles.filter(coincide);
+  const sector = DATA.sector.filter(coincide);
+
+  const primero = fijos[0] || fungibles[0] || sector[0];
+  let responsable = null, cargo = null;
+  if(primero){
+    responsable = primero["GRADO NOMBRES"] || primero["RESPONSABLE"] || primero["NOMBRES"] || null;
+    cargo = primero["CARGO"] || null;
+  }
+  return { fijos, fungibles, sector, responsable, cargo };
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function agruparPorOficina(lista){
+  const mapa = new Map();
+  lista.forEach(o => {
+    const ofi = (o["OFICINA/SECTOR"] || o["OFICINA / SECTOR"] || o["OFICINA"] || "SIN OFICINA").trim();
+    if(!mapa.has(ofi)) mapa.set(ofi, []);
+    mapa.get(ofi).push(o);
+  });
+  return mapa;
+}
+
+function tablaHTML(titulo, lista, columnas){
+  let html = `<div class="tabla-seccion">
+    <div class="tabla-titulo">
+      <span>${titulo}</span>
+      <span class="count">${lista.length}</span>
+    </div>`;
+
+  if(!lista.length){
+    html += `<div class="no-data">NO CUENTA ${titulo}</div></div>`;
+    return html;
+  }
+
+  const grupos = agruparPorOficina(lista);
+  for(const [oficina, items] of grupos){
+    html += `<div class="oficina-tag">📍 ${esc(oficina)}</div>`;
+    html += `<div class="tabla-scroll"><table><thead><tr>`;
+    columnas.forEach(c => html += `<th>${c.label}</th>`);
+    html += `</tr></thead><tbody>`;
+    items.forEach(item => {
+      html += "<tr>";
+      columnas.forEach(c => {
+        const val = (c.render === "estado") ? renderEstado(item[c.key]) : renderValor(item[c.key]);
+        html += `<td>${val}</td>`;
+      });
+      html += "</tr>";
+    });
+    html += `</tbody></table></div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function renderResultado(termino){
+  const cont = document.getElementById("resultado");
+  const res = buscar(termino);
+
+  if(norm(termino).length < 2){
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🎖️</div>
+      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+    </div>`;
+    return;
+  }
+
+  const totalReg = res.fijos.length + res.fungibles.length + res.sector.length;
+  if(totalReg === 0){
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🔎</div>
+      NO SE ENCONTRARON REGISTROS PARA "<b>${esc(termino)}</b>"
+    </div>`;
+    return;
+  }
+
+  let html = "";
+  if(res.responsable){
+    html += `<div class="resp-card">
+      <div class="nombre">🎖️ ${esc(res.responsable)}</div>
+      ${res.cargo ? `<div class="cargo">${esc(res.cargo)}</div>` : ``}
+    </div>`;
+  }
+
+  /* FIJOS */
+  html += tablaHTML("FIJOS", res.fijos, [
+    {label:"CODIGOVSIAF", key:"CODIGOVSIAF"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"COSTO", key:"COSTO"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"}
+  ]);
+
+  /* FUNGIBLES */
+  html += tablaHTML("FUNGIBLES", res.fungibles, [
+    {label:"CÓDIGO", key:"CODIGO"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"VALOR TOTAL", key:"VALOR TOTAL"},
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"}
+  ]);
+
+  /* SECTOR */
+  html += tablaHTML("SECTOR", res.sector, [
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"},
+    {label:"OBS", key:"OBS"}
+  ]);
+
+  cont.innerHTML = html;
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+  const cont = document.getElementById("resultado");
+  cont.innerHTML = `<div class="loading">⏳ CARGANDO BASE DE DATOS...</div>`;
+
+  await cargarTodo();
+
+  const errores = [];
+  if(!DATA.fijos.length) errores.push("FIJOS");
+  if(!DATA.fungibles.length) errores.push("FUNGIBLES");
+  if(!DATA.sector.length) errores.push("SECTOR");
+
+  if(errores.length === 3){
+    cont.innerHTML = `<div class="error">
+      ⚠️ NO SE PUDO CARGAR NINGÚN ARCHIVO<br><br>
+      Revise la consola (F12) para ver detalles.
+    </div>`;
+  } else {
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🎖️</div>
+      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+      ${errores.length ? `<br><br><small style="color:#c0392b">⚠️ Sin datos: ${errores.join(", ")}</small>` : ""}
+    </div>`;
+  }
+
+  const input = document.getElementById("buscador");
+  let timer;
+  input.addEventListener("input", e => {
+    clearTimeout(timer);
+    timer = setTimeout(() => renderResultado(e.target.value), 200);
+  });
+});
+</script>
+</body>
+</html>
