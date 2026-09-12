@@ -6,102 +6,127 @@
 <title>Control de Activos Fijos y Fungibles</title>
 <style>
   :root{
-    --verde-mil:#2f3e2e; --verde-osc:#1c261b; --verde-claro:#4a5d47;
-    --gris:#3a3a3a; --gris-claro:#d9d9d9; --arena:#c9c2a8;
-    --rojo:#c0392b; --texto:#1a1a1a;
-    /* Colores distintivos por tabla */
-    --col-fijos:#2f3e2e;      /* verde militar */
-    --col-fungibles:#1e3a5f;  /* azul oscuro */
-    --col-sector:#5c3a1e;     /* marrón */
-    --col-prestados:#6b1f2a;  /* rojo vino */
+    --verde-mil:#2f3e2e;
+    --verde-osc:#1c261b;
+    --verde-claro:#4a5d47;
+    --gris:#3a3a3a;
+    --gris-claro:#d9d9d9;
+    --arena:#c9c2a8;
+    --rojo:#c0392b;
+    --texto:#1a1a1a;
+
+    /* Colores por tipo de tabla */
+    --color-fijos:#3d5a3d;
+    --color-fijos-osc:#243824;
+    --color-fungibles:#3a4a6b;
+    --color-fungibles-osc:#222d45;
+    --color-sector:#6b4a2b;
+    --color-sector-osc:#3f2a17;
+    --color-prestados:#6b2b4a;
+    --color-prestados-osc:#3f1729;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#e8e6dc;color:var(--texto);font-size:14px;}
+  body{
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
+    background:#e8e6dc;
+    color:var(--texto);
+    font-size:14px;
+  }
+  /* HEADER PRINCIPAL */
   .main-header{
     background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
-    color:#f2f0e5;padding:14px 12px;text-align:center;
-    border-bottom:3px solid var(--arena);position:sticky;top:0;z-index:50;
+    color:#f2f0e5;
+    padding:14px 12px;
+    text-align:center;
+    border-bottom:3px solid var(--arena);
+    position:sticky;top:0;z-index:50;
   }
-  .main-header h1{font-size:16px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;}
-  .main-header small{display:block;font-size:10px;color:var(--arena);letter-spacing:2px;margin-top:4px;}
+  .main-header h1{
+    font-size:16px;letter-spacing:1.5px;
+    text-transform:uppercase;font-weight:700;
+  }
+  .main-header small{
+    display:block;font-size:10px;color:var(--arena);
+    letter-spacing:2px;margin-top:4px;
+  }
+  /* BUSCADOR */
   .search-wrap{
-    padding:16px 12px;background:var(--verde-osc);
-    position:sticky;top:56px;z-index:49;border-bottom:1px solid var(--arena);
+    padding:14px 12px 10px;
+    background:var(--verde-osc);
+    position:sticky;top:56px;z-index:49;
+    border-bottom:1px solid var(--arena);
   }
   .search-wrap input{
     width:100%;padding:12px 14px;font-size:15px;
-    border:2px solid var(--arena);background:#f7f5ea;color:var(--texto);
-    border-radius:3px;outline:none;text-transform:uppercase;
-  }
-  .search-wrap input:focus{border-color:#e0d9b8;box-shadow:0 0 0 2px rgba(201,194,168,.3);}
-  .search-hint{text-align:center;font-size:11px;color:var(--arena);margin-top:6px;letter-spacing:1px;}
-  #resultado{padding:12px;}
-
-  /* BOTÓN VER TODO */
-  .btn-todo{
-    display:block;
-    width:100%;
-    margin:8px 0 16px 0;
-    padding:14px;
-    background:linear-gradient(180deg,#4a5d47,#2f3e2e);
-    color:#f2f0e5;
-    border:2px solid var(--arena);
-    border-radius:3px;
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:1.5px;
+    border:2px solid var(--arena);background:#f7f5ea;
+    color:var(--texto);border-radius:3px;outline:none;
     text-transform:uppercase;
+  }
+  .search-wrap input:focus{
+    border-color:#e0d9b8;
+    box-shadow:0 0 0 2px rgba(201,194,168,.3);
+  }
+  .search-hint{
+    text-align:center;font-size:11px;color:var(--arena);
+    margin-top:6px;letter-spacing:1px;
+  }
+  /* BOTONES DE VISTA GENERAL */
+  .botones-vista{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    margin-top:10px;
+  }
+  .btn-vista{
+    background:#2a2a2a;
+    color:#e0d9b8;
+    border:1px solid var(--arena);
+    padding:8px 4px;
+    font-size:10px;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    font-weight:700;
+    border-radius:3px;
     cursor:pointer;
     transition:all .15s ease;
+    text-align:center;
+    line-height:1.2;
   }
-  .btn-todo:hover, .btn-todo:active{
-    background:linear-gradient(180deg,#5c7159,#3a4a37);
+  .btn-vista:hover,.btn-vista:active{
+    filter:brightness(1.3);
     transform:translateY(-1px);
   }
-
-  /* LISTA RESPONSABLES */
-  .lista-responsables{display:flex;flex-direction:column;gap:8px;padding:4px 0;}
-  .lista-responsables .titulo-lista{
-    font-size:11px;color:#5c5644;letter-spacing:1.5px;text-transform:uppercase;
-    padding:6px 4px;border-bottom:1px solid #c9c2a8;margin-bottom:4px;
+  .btn-vista.active{
+    background:var(--arena);
+    color:var(--verde-osc);
+    border-color:#fff;
   }
-  .resp-item{
-    background:#f4f2e8;border:1px solid var(--verde-claro);
-    border-left:5px solid var(--verde-mil);padding:12px 14px;
-    cursor:pointer;transition:all .15s ease;border-radius:2px;
-    display:flex;justify-content:space-between;align-items:center;gap:10px;
-  }
-  .resp-item:hover, .resp-item:active{background:var(--verde-claro);border-left-color:var(--arena);}
-  .resp-item:hover .resp-item-nombre, .resp-item:hover .resp-item-cargo,
-  .resp-item:active .resp-item-nombre, .resp-item:active .resp-item-cargo{color:#fff;}
-  .resp-item-info{flex:1;min-width:0;}
-  .resp-item-nombre{font-size:13px;font-weight:700;color:var(--verde-osc);letter-spacing:.3px;word-break:break-word;}
-  .resp-item-cargo{font-size:11px;color:#5c5644;margin-top:3px;text-transform:uppercase;letter-spacing:.5px;word-break:break-word;}
-  .resp-item-flecha{font-size:20px;color:var(--arena);flex-shrink:0;font-weight:700;}
+  .btn-vista[data-tipo="fijos"]{border-left:4px solid var(--color-fijos);}
+  .btn-vista[data-tipo="fungibles"]{border-left:4px solid var(--color-fungibles);}
+  .btn-vista[data-tipo="sector"]{border-left:4px solid var(--color-sector);}
+  .btn-vista[data-tipo="prestados"]{border-left:4px solid var(--color-prestados);}
+  .btn-vista[data-tipo="todos"]{border-left:4px solid var(--arena);}
 
-  /* BOTÓN VOLVER */
-  .btn-volver{
-    display:inline-flex;align-items:center;gap:6px;background:var(--verde-osc);
-    color:#f2f0e5;border:1px solid var(--arena);padding:8px 14px;
-    font-size:12px;letter-spacing:1px;text-transform:uppercase;
-    cursor:pointer;border-radius:3px;margin-bottom:14px;font-weight:600;
-  }
-  .btn-volver:hover{background:var(--verde-mil);}
-
-  /* TARJETA RESPONSABLE */
+  /* CONTENIDO */
+  #resultado{padding:12px;}
   .resp-card{
     background:var(--gris);color:#fff;padding:12px 14px;
     border-left:5px solid var(--arena);margin-bottom:16px;border-radius:2px;
   }
   .resp-card .nombre{font-size:15px;font-weight:700;letter-spacing:.5px;}
-  .resp-card .cargo{font-size:12px;color:var(--arena);margin-top:3px;text-transform:uppercase;letter-spacing:1px;}
+  .resp-card .cargo{
+    font-size:12px;color:var(--arena);margin-top:3px;
+    text-transform:uppercase;letter-spacing:1px;
+  }
 
   /* TABLAS */
   .tabla-seccion{
-    margin-bottom:22px;border:1px solid var(--verde-claro);
+    margin-bottom:22px;
+    border:1px solid var(--verde-claro);
     border-radius:3px;overflow:hidden;background:#f4f2e8;
   }
   .tabla-titulo{
+    background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
     color:#f2f0e5;padding:8px 12px;font-size:13px;font-weight:700;
     letter-spacing:1.5px;text-transform:uppercase;
     display:flex;justify-content:space-between;align-items:center;
@@ -111,34 +136,38 @@
     font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;
   }
 
-  /* COLORES DISTINTIVOS POR TABLA */
-  .tabla-seccion.fijos .tabla-titulo{background:linear-gradient(180deg,#3a4d38,#1c261b);}
-  .tabla-seccion.fungibles .tabla-titulo{background:linear-gradient(180deg,#264a70,#0f2238);}
-  .tabla-seccion.sector .tabla-titulo{background:linear-gradient(180deg,#7a4d28,#3d2410);}
-  .tabla-seccion.prestados .tabla-titulo{background:linear-gradient(180deg,#8b2a3a,#4a0f18);}
-
-  .tabla-seccion.fijos{border-color:#3a4d38;}
-  .tabla-seccion.fungibles{border-color:#264a70;}
-  .tabla-seccion.sector{border-color:#7a4d28;}
-  .tabla-seccion.prestados{border-color:#8b2a3a;}
+  /* Colores por tipo de tabla */
+  .tabla-seccion.fijos .tabla-titulo{
+    background:linear-gradient(180deg,var(--color-fijos),var(--color-fijos-osc));
+  }
+  .tabla-seccion.fungibles .tabla-titulo{
+    background:linear-gradient(180deg,var(--color-fungibles),var(--color-fungibles-osc));
+  }
+  .tabla-seccion.sector .tabla-titulo{
+    background:linear-gradient(180deg,var(--color-sector),var(--color-sector-osc));
+  }
+  .tabla-seccion.prestados .tabla-titulo{
+    background:linear-gradient(180deg,var(--color-prestados),var(--color-prestados-osc));
+  }
 
   .oficina-tag{
-    background:#e6e2cf;color:var(--verde-osc);font-size:11px;font-weight:700;
-    padding:5px 10px;letter-spacing:1px;text-transform:uppercase;
-    border-bottom:1px solid var(--verde-claro);border-top:1px solid var(--verde-claro);
+    background:#e6e2cf;color:var(--verde-osc);
+    font-size:11px;font-weight:700;padding:5px 10px;
+    letter-spacing:1px;text-transform:uppercase;
+    border-bottom:1px solid var(--verde-claro);
+    border-top:1px solid var(--verde-claro);
   }
   .tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px;}
   thead th{
-    color:#fff;text-align:left;padding:7px 8px;font-size:11px;
-    letter-spacing:.5px;text-transform:uppercase;
+    background:var(--verde-claro);color:#fff;text-align:left;
+    padding:7px 8px;font-size:11px;letter-spacing:.5px;text-transform:uppercase;
     border-right:1px solid rgba(255,255,255,.15);
   }
-  /* Encabezados de columnas con color de cada tabla */
-  .tabla-seccion.fijos thead th{background:#4a5d47;}
-  .tabla-seccion.fungibles thead th{background:#2f5a8a;}
-  .tabla-seccion.sector thead th{background:#8a5a35;}
-  .tabla-seccion.prestados thead th{background:#a13040;}
+  .tabla-seccion.fijos thead th{background:var(--color-fijos);}
+  .tabla-seccion.fungibles thead th{background:var(--color-fungibles);}
+  .tabla-seccion.sector thead th{background:var(--color-sector);}
+  .tabla-seccion.prestados thead th{background:var(--color-prestados);}
 
   tbody td{
     padding:6px 8px;border-bottom:1px solid var(--gris-claro);
@@ -152,18 +181,78 @@
     font-style:italic;font-size:12px;letter-spacing:1px;text-transform:uppercase;
     border-top:1px solid var(--verde-claro);
   }
-  .estado-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;}
+  .estado-badge{
+    display:inline-block;padding:2px 7px;border-radius:3px;
+    font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;
+  }
   .estado-malo{background:#8b3a2e;}
   .estado-regular{background:#8a7a3a;}
   .estado-bueno{background:#3d6b3a;}
   .estado-pendiente{background:var(--rojo);}
 
-  /* INFO INICIAL */
-  .info-inicial{text-align:center;padding:30px 20px;color:#5c5644;font-size:13px;letter-spacing:1px;}
+  /* ESTADOS GENERALES */
+  .info-inicial{
+    text-align:center;padding:40px 20px;color:#5c5644;
+    font-size:13px;letter-spacing:1px;
+  }
   .info-inicial .icon{font-size:38px;margin-bottom:10px;opacity:.5;}
   .loading,.error{text-align:center;padding:24px;font-size:13px;letter-spacing:1px;}
   .error{color:var(--rojo);}
-  footer{text-align:center;padding:14px;font-size:10px;color:#7a7360;letter-spacing:1.5px;border-top:1px solid var(--gris-claro);}
+  footer{
+    text-align:center;padding:14px;font-size:10px;color:#7a7360;
+    letter-spacing:1.5px;border-top:1px solid var(--gris-claro);
+  }
+
+  /* LISTA DE RESPONSABLES */
+  .lista-responsables{display:flex;flex-direction:column;gap:8px;padding:4px 0;}
+  .lista-responsables .titulo-lista{
+    font-size:11px;color:#5c5644;letter-spacing:1.5px;text-transform:uppercase;
+    padding:6px 4px;border-bottom:1px solid #c9c2a8;margin-bottom:4px;
+  }
+  .resp-item{
+    background:#f4f2e8;border:1px solid var(--verde-claro);
+    border-left:5px solid var(--verde-mil);
+    padding:12px 14px;cursor:pointer;transition:all .15s ease;
+    border-radius:2px;display:flex;justify-content:space-between;
+    align-items:center;gap:10px;
+  }
+  .resp-item:hover,.resp-item:active{
+    background:var(--verde-claro);border-left-color:var(--arena);
+  }
+  .resp-item:hover .resp-item-nombre,
+  .resp-item:hover .resp-item-cargo,
+  .resp-item:active .resp-item-nombre,
+  .resp-item:active .resp-item-cargo{color:#fff;}
+  .resp-item-info{flex:1;min-width:0;}
+  .resp-item-nombre{
+    font-size:13px;font-weight:700;color:var(--verde-osc);
+    letter-spacing:.3px;word-break:break-word;
+  }
+  .resp-item-cargo{
+    font-size:11px;color:#5c5644;margin-top:3px;
+    text-transform:uppercase;letter-spacing:.5px;word-break:break-word;
+  }
+  .resp-item-flecha{font-size:20px;color:var(--arena);flex-shrink:0;font-weight:700;}
+
+  /* BOTÓN VOLVER */
+  .btn-volver{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--verde-osc);color:#f2f0e5;
+    border:1px solid var(--arena);padding:8px 14px;
+    font-size:12px;letter-spacing:1px;text-transform:uppercase;
+    cursor:pointer;border-radius:3px;margin-bottom:14px;font-weight:600;
+  }
+  .btn-volver:hover{background:var(--verde-mil);}
+
+  /* BOTÓN VISTA GENERAL */
+  .btn-general{
+    background:#2a2a2a;color:#e0d9b8;
+    border:1px solid var(--arena);padding:6px 12px;
+    font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    cursor:pointer;border-radius:3px;margin-left:8px;font-weight:600;
+  }
+  .btn-general:hover{background:#3a3a3a;}
+  .acciones-detalle{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;}
 </style>
 </head>
 <body>
@@ -176,12 +265,18 @@
 <div class="search-wrap">
   <input type="text" id="buscador" placeholder="🔍 Buscar por Nombres y Apellidos..." autocomplete="off">
   <div class="search-hint">Escriba el nombre del responsable</div>
+  <div class="botones-vista">
+    <button class="btn-vista" data-tipo="fijos"     onclick="verGeneral('fijos')">Fijos</button>
+    <button class="btn-vista" data-tipo="fungibles" onclick="verGeneral('fungibles')">Fungibles</button>
+    <button class="btn-vista" data-tipo="sector"    onclick="verGeneral('sector')">Sector</button>
+    <button class="btn-vista" data-tipo="prestados" onclick="verGeneral('prestados')">Prestados</button>
+  </div>
 </div>
 
 <div id="resultado">
   <div class="info-inicial">
     <div class="icon">🎖️</div>
-    INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+    INGRESE UN NOMBRE O TOQUE UN BOTÓN PARA VER EL INVENTARIO GENERAL
   </div>
 </div>
 
@@ -189,7 +284,7 @@
 
 <script>
 /* ============================================================
-   CONFIGURACIÓN
+   CONFIGURACIÓN — Apps Script + Google Sheets
    ============================================================ */
 const API_URL = "https://script.google.com/macros/s/AKfycbz6yhDzMoFa11ohQ1rz2p3fp--wzeypJ94AI3mgmM7iqwv0h08lTctoBfJpik7l1KOxJw/exec";
 
@@ -226,7 +321,9 @@ function parseCSV(text){
 
 function limpiarHeader(h){
   return h.toString().trim().toUpperCase()
-    .replace(/\./g,"").replace(/\s+/g," ").trim();
+    .replace(/\./g,"")
+    .replace(/\s+/g," ")
+    .trim();
 }
 
 function toObjects(rows){
@@ -267,7 +364,6 @@ async function cargar(key, fileId){
     const rows = parseCSV(texto);
     DATA[key] = toObjects(rows);
     console.log(`✔ ${key}: ${DATA[key].length} registros`);
-    if(DATA[key][0]) console.log(`   Columnas ${key}:`, Object.keys(DATA[key][0]));
   }catch(e){
     console.warn(`✖ Error cargando ${key}:`, e.message);
     DATA[key] = [];
@@ -304,27 +400,17 @@ function renderEstado(val){
 }
 
 /* ============================================================
-   IDENTIFICAR RESPONSABLE
+   IDENTIFICAR RESPONSABLE Y CARGO
    ============================================================ */
-const CAMPOS_NOMBRE = [
-  "GRADO NOMBRES", "GRADO NOMBRE", "NOMBRES", "NOMBRE",
-  "RESPONSABLE", "NOMBRES Y APELLIDOS", "APELLIDOS Y NOMBRES",
-  "GRADO Y NOMBRE", "GRADO NOMBRES Y APELLIDOS"
-];
-function getNombreDeObjeto(o){
-  for(const campo of CAMPOS_NOMBRE){
-    if(o[campo] && o[campo].toString().trim()) return o[campo].toString().trim();
-  }
-  for(const k of Object.keys(o)){
-    if(k.toUpperCase().includes("NOMBRE") && o[k] && o[k].toString().trim()){
-      return o[k].toString().trim();
-    }
-  }
-  return "";
+function getResponsable(obj){
+  return (obj["GRADO NOMBRES"] || obj["RESPONSABLE"] || obj["NOMBRES"] || "").trim();
+}
+function getCargo(obj){
+  return (obj["CARGO"] || "").trim();
 }
 
 /* ============================================================
-   BUSCAR RESPONSABLES
+   PASO 1: BUSCAR RESPONSABLES ÚNICOS
    ============================================================ */
 function buscarResponsables(termino){
   const t = norm(termino);
@@ -334,12 +420,16 @@ function buscarResponsables(termino){
 
   function escanear(lista){
     lista.forEach(o => {
-      const nombreRaw = getNombreDeObjeto(o);
+      const nombreRaw = getResponsable(o);
       if(!nombreRaw) return;
       if(!norm(nombreRaw).includes(t)) return;
       const clave = norm(nombreRaw);
       if(!mapa.has(clave)){
-        mapa.set(clave, { nombre: nombreRaw, cargo: (o["CARGO"] || "").trim() });
+        mapa.set(clave, {
+          nombre: nombreRaw,
+          cargo: getCargo(o),
+          fijos: 0, fungibles: 0, sector: 0, prestados: 0
+        });
       }
     });
   }
@@ -352,11 +442,10 @@ function buscarResponsables(termino){
   const lista = Array.from(mapa.values());
   lista.forEach(r => {
     const clave = norm(r.nombre);
-    const contar = (arr) => arr.filter(o => norm(getNombreDeObjeto(o)) === clave).length;
-    r.fijos      = contar(DATA.fijos);
-    r.fungibles  = contar(DATA.fungibles);
-    r.sector     = contar(DATA.sector);
-    r.prestados  = contar(DATA.prestados);
+    r.fijos      = DATA.fijos.filter(o => norm(getResponsable(o)) === clave).length;
+    r.fungibles  = DATA.fungibles.filter(o => norm(getResponsable(o)) === clave).length;
+    r.sector     = DATA.sector.filter(o => norm(getResponsable(o)) === clave).length;
+    r.prestados  = DATA.prestados.filter(o => norm(getResponsable(o)) === clave).length;
   });
 
   lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
@@ -368,12 +457,16 @@ function buscarResponsables(termino){
    ============================================================ */
 function renderListaResponsables(termino){
   const cont = document.getElementById("resultado");
-  const lista = buscarResponsables(termino);
 
   if(norm(termino).length < 2){
-    cont.innerHTML = pantallaInicial();
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🎖️</div>
+      INGRESE UN NOMBRE O TOQUE UN BOTÓN PARA VER EL INVENTARIO GENERAL
+    </div>`;
     return;
   }
+
+  const lista = buscarResponsables(termino);
 
   if(!lista.length){
     cont.innerHTML = `<div class="info-inicial">
@@ -389,7 +482,7 @@ function renderListaResponsables(termino){
   lista.forEach((r, idx) => {
     const total = r.fijos + r.fungibles + r.sector + r.prestados;
     html += `
-      <div class="resp-item" data-idx="${idx}" onclick="seleccionarResponsable(${idx})">
+      <div class="resp-item" onclick="seleccionarResponsable(${idx})">
         <div class="resp-item-info">
           <div class="resp-item-nombre">🎖️ ${esc(r.nombre)}</div>
           <div class="resp-item-cargo">${esc(r.cargo || "SIN CARGO")} · ${total} bien(es)</div>
@@ -404,7 +497,7 @@ function renderListaResponsables(termino){
 }
 
 /* ============================================================
-   RENDER — DETALLE DE UN RESPONSABLE
+   RENDER — DETALLE DEL RESPONSABLE
    ============================================================ */
 function seleccionarResponsable(idx){
   const lista = window.__listaActual || [];
@@ -412,7 +505,7 @@ function seleccionarResponsable(idx){
   if(!responsable) return;
 
   const clave = norm(responsable.nombre);
-  const filtrar = (arr) => arr.filter(o => norm(getNombreDeObjeto(o)) === clave);
+  const filtrar = (arr) => arr.filter(o => norm(getResponsable(o)) === clave);
 
   renderDetalle(responsable, {
     fijos:     filtrar(DATA.fijos),
@@ -422,24 +515,6 @@ function seleccionarResponsable(idx){
   });
 }
 
-/* ============================================================
-   RENDER — VISTA GENERAL (TODOS LOS DATOS)
-   ============================================================ */
-function verTodoGeneral(){
-  renderDetalle({
-    nombre: "INVENTARIO GENERAL",
-    cargo: "TODOS LOS RESPONSABLES — TODAS LAS OFICINAS"
-  }, {
-    fijos:     DATA.fijos,
-    fungibles: DATA.fungibles,
-    sector:    DATA.sector,
-    prestados: DATA.prestados
-  });
-}
-
-/* ============================================================
-   RENDER — DETALLE
-   ============================================================ */
 function agruparPorOficina(lista){
   const mapa = new Map();
   lista.forEach(o => {
@@ -450,8 +525,8 @@ function agruparPorOficina(lista){
   return mapa;
 }
 
-function tablaHTML(titulo, lista, columnas, claseExtra){
-  const clase = claseExtra || "";
+function tablaHTML(titulo, lista, columnas, tipoClase){
+  const clase = tipoClase || "";
   let html = `<div class="tabla-seccion ${clase}">
     <div class="tabla-titulo">
       <span>${titulo}</span>
@@ -483,48 +558,51 @@ function tablaHTML(titulo, lista, columnas, claseExtra){
   return html;
 }
 
-function renderDetalle(responsable, datos){
-  const cont = document.getElementById("resultado");
-
-  let html = `
-    <button class="btn-volver" onclick="volverALista()">← Volver</button>
-    <div class="resp-card">
-      <div class="nombre">🎖️ ${esc(responsable.nombre)}</div>
-      ${responsable.cargo ? `<div class="cargo">${esc(responsable.cargo)}</div>` : ``}
-    </div>`;
-
-  /* FIJOS */
-  html += tablaHTML("FIJOS", datos.fijos, [
+/* Definición de columnas por tabla (reutilizable) */
+const COLUMNAS = {
+  fijos: [
     {label:"CODIGOVSIAF", key:"CODIGOVSIAF"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"COSTO", key:"COSTO"},
     {label:"ESTADO", key:"ESTADO", render:"estado"}
-  ], "fijos");
-
-  /* FUNGIBLES */
-  html += tablaHTML("FUNGIBLES", datos.fungibles, [
+  ],
+  fungibles: [
     {label:"CÓDIGO", key:"CODIGO"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"VALOR TOTAL", key:"VALOR TOTAL"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"}
-  ], "fungibles");
-
-  /* SECTOR */
-  html += tablaHTML("SECTOR", datos.sector, [
+  ],
+  sector: [
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"},
     {label:"OBS", key:"OBS"}
-  ], "sector");
-
-  /* ARTÍCULOS PRESTADOS */
-  html += tablaHTML("ARTÍCULOS PRESTADOS", datos.prestados, [
+  ],
+  prestados: [
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"},
     {label:"OBS", key:"OBS"}
-  ], "prestados");
+  ]
+};
+
+function renderDetalle(responsable, datos){
+  const cont = document.getElementById("resultado");
+
+  let html = `
+    <div class="acciones-detalle">
+      <button class="btn-volver" onclick="volverALista()">← Volver a resultados</button>
+    </div>
+    <div class="resp-card">
+      <div class="nombre">🎖️ ${esc(responsable.nombre)}</div>
+      ${responsable.cargo ? `<div class="cargo">${esc(responsable.cargo)}</div>` : ``}
+    </div>`;
+
+  html += tablaHTML("FIJOS", datos.fijos, COLUMNAS.fijos, "fijos");
+  html += tablaHTML("FUNGIBLES", datos.fungibles, COLUMNAS.fungibles, "fungibles");
+  html += tablaHTML("SECTOR", datos.sector, COLUMNAS.sector, "sector");
+  html += tablaHTML("ARTÍCULOS PRESTADOS", datos.prestados, COLUMNAS.prestados, "prestados");
 
   cont.innerHTML = html;
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -532,27 +610,43 @@ function renderDetalle(responsable, datos){
 
 function volverALista(){
   const input = document.getElementById("buscador");
-  if(input.value.trim().length >= 2){
-    renderListaResponsables(input.value);
-  } else {
-    document.getElementById("resultado").innerHTML = pantallaInicial();
-    window.__listaActual = null;
-  }
+  renderListaResponsables(input.value);
 }
 
 /* ============================================================
-   PANTALLA INICIAL (con botón ver todo)
+   VISTAS GENERALES (sin filtrar por responsable)
    ============================================================ */
-function pantallaInicial(){
-  return `
-    <div class="info-inicial">
-      <div class="icon">🎖️</div>
-      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+function verGeneral(tipo){
+  const cont = document.getElementById("resultado");
+
+  // Marcar botón activo
+  document.querySelectorAll(".btn-vista").forEach(b => b.classList.remove("active"));
+  const botonActivo = document.querySelector(`.btn-vista[data-tipo="${tipo}"]`);
+  if(botonActivo) botonActivo.classList.add("active");
+
+  const titulos = {
+    fijos: "FIJOS",
+    fungibles: "FUNGIBLES",
+    sector: "SECTOR",
+    prestados: "ARTÍCULOS PRESTADOS"
+  };
+
+  const lista = DATA[tipo] || [];
+  const titulo = titulos[tipo] || tipo.toUpperCase();
+
+  let html = `
+    <div class="acciones-detalle">
+      <button class="btn-volver" onclick="volverALista()">← Volver a resultados</button>
     </div>
-    <button class="btn-todo" onclick="verTodoGeneral()">
-      📋 VER TODO EL INVENTARIO GENERAL
-    </button>
-  `;
+    <div class="resp-card" style="border-left-color:var(--arena)">
+      <div class="nombre">📋 INVENTARIO GENERAL — ${titulo}</div>
+      <div class="cargo">Mostrando los ${lista.length} registros totales</div>
+    </div>`;
+
+  html += tablaHTML(titulo, lista, COLUMNAS[tipo] || [], tipo);
+
+  cont.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 /* ============================================================
@@ -568,7 +662,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if(!DATA.fijos.length) errores.push("FIJOS");
   if(!DATA.fungibles.length) errores.push("FUNGIBLES");
   if(!DATA.sector.length) errores.push("SECTOR");
-  if(!DATA.prestados.length) errores.push("ARTÍCULOS PRESTADOS");
+  if(!DATA.prestados.length) errores.push("PRESTADOS");
 
   if(errores.length === 4){
     cont.innerHTML = `<div class="error">
@@ -576,18 +670,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       Revise la consola (F12) para ver detalles.
     </div>`;
   } else {
-    cont.innerHTML = pantallaInicial();
-    if(errores.length){
-      cont.innerHTML += `<div style="text-align:center;color:#c0392b;font-size:11px;margin-top:8px">
-        ⚠️ Sin datos: ${errores.join(", ")}
-      </div>`;
-    }
+    cont.innerHTML = `<div class="info-inicial">
+      <div class="icon">🎖️</div>
+      INGRESE UN NOMBRE O TOQUE UN BOTÓN PARA VER EL INVENTARIO GENERAL
+      ${errores.length ? `<br><br><small style="color:#c0392b">⚠️ Sin datos: ${errores.join(", ")}</small>` : ""}
+    </div>`;
   }
 
   const input = document.getElementById("buscador");
   let timer;
   input.addEventListener("input", e => {
     clearTimeout(timer);
+    // Si hay un botón activo, desmarcarlo al buscar por nombre
+    document.querySelectorAll(".btn-vista").forEach(b => b.classList.remove("active"));
     timer = setTimeout(() => renderListaResponsables(e.target.value), 200);
   });
 });
