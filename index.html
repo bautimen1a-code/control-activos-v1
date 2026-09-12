@@ -9,166 +9,294 @@
     --verde-mil:#2f3e2e; --verde-osc:#1c261b; --verde-claro:#4a5d47;
     --gris:#3a3a3a; --gris-claro:#d9d9d9; --arena:#c9c2a8;
     --rojo:#c0392b; --texto:#1a1a1a;
+    --bg-body:#e8e6dc;
+    --bg-card:#f4f2e8;
+    --bg-hover:#e2dfc9;
+    --bg-header-linear-1:#2f3e2e;
+    --bg-header-linear-2:#1c261b;
+    --txt-header:#f2f0e5;
+    --borde-sutil:#eceae0;
+    --bg-input:#f7f5ea;
+    --bg-oficina:#e6e2cf;
+    --bg-nodata:#f0eee2;
+    --txt-nodata:#7a7360;
+    --bg-info-txt:#5c5644;
+  }
+  body.dark{
+    --verde-mil:#1a241a; --verde-osc:#0d140d; --verde-claro:#2a3828;
+    --gris:#1f1f1f; --gris-claro:#2a2a2a; --arena:#7a7159;
+    --texto:#e0e0d8;
+    --bg-body:#121212;
+    --bg-card:#1c1c1c;
+    --bg-hover:#252525;
+    --bg-header-linear-1:#1a241a;
+    --bg-header-linear-2:#0d140d;
+    --txt-header:#d4d0bd;
+    --borde-sutil:#2a2a2a;
+    --bg-input:#1f1f1f;
+    --bg-oficina:#252525;
+    --bg-nodata:#1a1a1a;
+    --txt-nodata:#8a8574;
+    --bg-info-txt:#a0a090;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:#e8e6dc;color:var(--texto);font-size:14px;}
-  .main-header{
-    background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
-    color:#f2f0e5;padding:14px 12px;text-align:center;
-    border-bottom:3px solid var(--arena);position:sticky;top:0;z-index:50;
+  body{
+    font-family:"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg-body);
+    color:var(--texto);
+    font-size:14px;
+    transition:background .25s ease,color .25s ease;
   }
-  .main-header h1{font-size:16px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;}
-  .main-header small{display:block;font-size:10px;color:var(--arena);letter-spacing:2px;margin-top:4px;}
+  /* HEADER PRINCIPAL */
+  .main-header{
+    background:linear-gradient(180deg,var(--bg-header-linear-1),var(--bg-header-linear-2));
+    color:var(--txt-header);
+    padding:14px 12px;
+    text-align:center;
+    border-bottom:3px solid var(--arena);
+    position:sticky;top:0;z-index:50;
+    transition:background .25s ease;
+  }
+  .main-header h1{
+    font-size:16px;letter-spacing:1.5px;
+    text-transform:uppercase;font-weight:700;
+  }
+  .main-header small{
+    display:block;font-size:10px;color:var(--arena);
+    letter-spacing:2px;margin-top:4px;
+  }
+  .header-tools{
+    position:absolute;top:10px;right:10px;
+    display:flex;gap:6px;
+  }
+  .tool-btn{
+    background:rgba(255,255,255,.08);
+    border:1px solid var(--arena);
+    color:var(--txt-header);
+    width:34px;height:34px;
+    border-radius:4px;
+    cursor:pointer;
+    font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s ease;
+  }
+  .tool-btn:hover,.tool-btn:active{
+    background:var(--arena);color:var(--verde-osc);
+  }
+  /* BUSCADOR */
   .search-wrap{
-    padding:16px 12px;background:var(--verde-osc);
-    position:sticky;top:56px;z-index:49;border-bottom:1px solid var(--arena);
+    padding:16px 12px;
+    background:var(--bg-header-linear-2);
+    position:sticky;top:56px;z-index:49;
+    border-bottom:1px solid var(--arena);
+    transition:background .25s ease;
   }
   .search-wrap input{
     width:100%;padding:12px 14px;font-size:15px;
-    border:2px solid var(--arena);background:#f7f5ea;color:var(--texto);
-    border-radius:3px;outline:none;text-transform:uppercase;
+    border:2px solid var(--arena);background:var(--bg-input);
+    color:var(--texto);border-radius:3px;outline:none;
+    text-transform:uppercase;
   }
-  .search-wrap input:focus{border-color:#e0d9b8;box-shadow:0 0 0 2px rgba(201,194,168,.3);}
-  .search-hint{text-align:center;font-size:11px;color:var(--arena);margin-top:6px;letter-spacing:1px;}
+  .search-wrap input:focus{
+    border-color:var(--arena);
+    box-shadow:0 0 0 2px rgba(201,194,168,.3);
+  }
+  .search-hint{
+    text-align:center;font-size:11px;color:var(--arena);
+    margin-top:6px;letter-spacing:1px;
+  }
   #resultado{padding:12px;}
+  /* TARJETA RESPONSABLE */
   .resp-card{
-    background:var(--gris);color:#fff;padding:12px 14px;
-    border-left:5px solid var(--arena);margin-bottom:16px;border-radius:2px;
+    background:var(--gris);color:#fff;
+    padding:12px 14px;border-left:5px solid var(--arena);
+    margin-bottom:16px;border-radius:2px;
   }
   .resp-card .nombre{font-size:15px;font-weight:700;letter-spacing:.5px;}
   .resp-card .cargo{
     font-size:12px;color:var(--arena);margin-top:3px;
     text-transform:uppercase;letter-spacing:1px;
   }
-  .tabla-seccion{margin-bottom:22px;border:1px solid var(--verde-claro);border-radius:3px;overflow:hidden;background:#f4f2e8;}
-  .tabla-titulo{
-    background:linear-gradient(180deg,var(--verde-mil),var(--verde-osc));
-    color:#f2f0e5;padding:8px 12px;font-size:13px;font-weight:700;
-    letter-spacing:1.5px;text-transform:uppercase;
-    display:flex;justify-content:space-between;align-items:center;
-  }
-  .tabla-titulo .count{background:var(--arena);color:var(--verde-osc);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;}
-  .oficina-tag{
-    background:#e6e2cf;color:var(--verde-osc);font-size:11px;font-weight:700;
-    padding:5px 10px;letter-spacing:1px;text-transform:uppercase;
-    border-bottom:1px solid var(--verde-claro);border-top:1px solid var(--verde-claro);
-  }
-  .tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px;}
-  thead th{
-    background:var(--verde-claro);color:#fff;text-align:left;
-    padding:7px 8px;font-size:11px;letter-spacing:.5px;text-transform:uppercase;
-    border-right:1px solid rgba(255,255,255,.15);
-  }
-  tbody td{
-    padding:6px 8px;border-bottom:1px solid var(--gris-claro);
-    border-right:1px solid #eceae0;vertical-align:top;word-break:break-word;
-  }
-  tbody tr:nth-child(even){background:#efeddf;}
-  tbody tr:hover{background:#e2dfc9;}
-  .pendiente{color:var(--rojo);font-weight:700;text-transform:uppercase;}
-  .no-data{
-    background:#f0eee2;color:#7a7360;text-align:center;padding:20px 12px;
-    font-style:italic;font-size:12px;letter-spacing:1px;text-transform:uppercase;
-    border-top:1px solid var(--verde-claro);
-  }
-  .estado-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;}
-  .estado-malo{background:#8b3a2e;}
-  .estado-regular{background:#8a7a3a;}
-  .estado-bueno{background:#3d6b3a;}
-  .estado-pendiente{background:var(--rojo);}
-  .info-inicial{text-align:center;padding:40px 20px;color:#5c5644;font-size:13px;letter-spacing:1px;}
-  .info-inicial .icon{font-size:38px;margin-bottom:10px;opacity:.5;}
-  .loading,.error{text-align:center;padding:24px;font-size:13px;letter-spacing:1px;}
-  .error{color:var(--rojo);}
-  footer{text-align:center;padding:14px;font-size:10px;color:#7a7360;letter-spacing:1.5px;border-top:1px solid var(--gris-claro);}
-
   /* LISTA DE RESPONSABLES */
   .lista-responsables{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    padding:4px 0;
+    display:flex;flex-direction:column;gap:8px;padding:4px 0;
   }
   .lista-responsables .titulo-lista{
-    font-size:11px;
-    color:#5c5644;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    padding:6px 4px;
-    border-bottom:1px solid #c9c2a8;
+    font-size:11px;color:var(--bg-info-txt);
+    letter-spacing:1.5px;text-transform:uppercase;
+    padding:6px 4px;border-bottom:1px solid var(--arena);
     margin-bottom:4px;
   }
   .resp-item{
-    background:#f4f2e8;
+    background:var(--bg-card);
     border:1px solid var(--verde-claro);
     border-left:5px solid var(--verde-mil);
-    padding:12px 14px;
-    cursor:pointer;
-    transition:all .15s ease;
-    border-radius:2px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
+    padding:12px 14px;cursor:pointer;
+    transition:all .15s ease;border-radius:2px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
   }
-  .resp-item:hover, .resp-item:active{
+  .resp-item:hover,.resp-item:active{
     background:var(--verde-claro);
     border-left-color:var(--arena);
   }
   .resp-item:hover .resp-item-nombre,
   .resp-item:hover .resp-item-cargo,
+  .resp-item:hover .resp-item-flecha,
   .resp-item:active .resp-item-nombre,
-  .resp-item:active .resp-item-cargo{
-    color:#fff;
-  }
+  .resp-item:active .resp-item-cargo,
+  .resp-item:active .resp-item-flecha{color:#fff;}
   .resp-item-info{flex:1;min-width:0;}
   .resp-item-nombre{
-    font-size:13px;
-    font-weight:700;
-    color:var(--verde-osc);
-    letter-spacing:.3px;
+    font-size:13px;font-weight:700;
+    color:var(--verde-osc);letter-spacing:.3px;
     word-break:break-word;
   }
+  body.dark .resp-item-nombre{color:#d4d0bd;}
   .resp-item-cargo{
-    font-size:11px;
-    color:#5c5644;
-    margin-top:3px;
-    text-transform:uppercase;
-    letter-spacing:.5px;
-    word-break:break-word;
+    font-size:11px;color:var(--bg-info-txt);
+    margin-top:3px;text-transform:uppercase;
+    letter-spacing:.5px;word-break:break-word;
   }
   .resp-item-flecha{
-    font-size:20px;
-    color:var(--arena);
-    flex-shrink:0;
-    font-weight:700;
+    font-size:20px;color:var(--arena);
+    flex-shrink:0;font-weight:700;
   }
   /* BOTÓN VOLVER */
   .btn-volver{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:var(--verde-osc);
-    color:#f2f0e5;
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--bg-header-linear-2);
+    color:var(--txt-header);
     border:1px solid var(--arena);
-    padding:8px 14px;
-    font-size:12px;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    cursor:pointer;
-    border-radius:3px;
-    margin-bottom:14px;
-    font-weight:600;
+    padding:8px 14px;font-size:12px;
+    letter-spacing:1px;text-transform:uppercase;
+    cursor:pointer;border-radius:3px;
+    margin-bottom:14px;font-weight:600;
   }
   .btn-volver:hover{background:var(--verde-mil);}
-
-
+  /* TABLAS */
+  .tabla-seccion{
+    margin-bottom:22px;
+    border:1px solid var(--verde-claro);
+    border-radius:3px;overflow:hidden;
+    background:var(--bg-card);
+  }
+  .tabla-seccion.prestados{border-color:#8a7a3a;}
+  .tabla-seccion.prestados .tabla-titulo{
+    background:linear-gradient(180deg,#6b5d2a,#4a4018);
+  }
+  .tabla-titulo{
+    background:linear-gradient(180deg,var(--bg-header-linear-1),var(--bg-header-linear-2));
+    color:var(--txt-header);
+    padding:8px 12px;font-size:13px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;
+  }
+  .tabla-titulo .titulo-left{flex:1;min-width:0;}
+  .tabla-titulo .tabla-tools{
+    display:flex;align-items:center;gap:6px;flex-shrink:0;
+  }
+  .tabla-titulo .mini-btn{
+    background:rgba(255,255,255,.12);
+    border:1px solid var(--arena);
+    color:var(--txt-header);
+    padding:3px 8px;font-size:10px;
+    border-radius:3px;cursor:pointer;
+    letter-spacing:.5px;font-weight:600;
+    text-decoration:none;display:inline-block;
+  }
+  .tabla-titulo .mini-btn:hover{background:var(--arena);color:var(--verde-osc);}
+  .tabla-titulo .count{
+    background:var(--arena);color:var(--verde-osc);
+    font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;
+  }
+  .oficina-tag{
+    background:var(--bg-oficina);
+    color:var(--verde-osc);
+    font-size:11px;font-weight:700;
+    padding:5px 10px;letter-spacing:1px;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--verde-claro);
+    border-top:1px solid var(--verde-claro);
+  }
+  body.dark .oficina-tag{color:#d4d0bd;}
+  .tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px;}
+  thead th{
+    background:var(--verde-claro);
+    color:#f2f0e5;text-align:left;
+    padding:7px 8px;font-size:11px;letter-spacing:.5px;
+    text-transform:uppercase;
+    border-right:1px solid rgba(255,255,255,.15);
+  }
+  tbody td{
+    padding:6px 8px;border-bottom:1px solid var(--gris-claro);
+    border-right:1px solid var(--borde-sutil);
+    vertical-align:top;word-break:break-word;
+  }
+  tbody tr:nth-child(even){background:var(--bg-card);}
+  tbody tr:hover{background:var(--bg-hover);}
+  .pendiente{color:var(--rojo);font-weight:700;text-transform:uppercase;}
+  .no-data{
+    background:var(--bg-nodata);color:var(--txt-nodata);
+    text-align:center;padding:20px 12px;
+    font-style:italic;font-size:12px;
+    letter-spacing:1px;text-transform:uppercase;
+    border-top:1px solid var(--verde-claro);
+  }
+  .estado-badge{
+    display:inline-block;padding:2px 7px;border-radius:3px;
+    font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;
+  }
+  .estado-malo{background:#8b3a2e;}
+  .estado-regular{background:#8a7a3a;}
+  .estado-bueno{background:#3d6b3a;}
+  .estado-pendiente{background:var(--rojo);}
+  .info-inicial{
+    text-align:center;padding:40px 20px;
+    color:var(--bg-info-txt);font-size:13px;letter-spacing:1px;
+  }
+  .info-inicial .icon{font-size:38px;margin-bottom:10px;opacity:.5;}
+  .loading,.error{
+    text-align:center;padding:24px;font-size:13px;letter-spacing:1px;
+  }
+  .error{color:var(--rojo);}
+  footer{
+    text-align:center;padding:14px;font-size:10px;
+    color:var(--bg-info-txt);letter-spacing:1.5px;
+    border-top:1px solid var(--gris-claro);
+  }
+  /* BOTÓN VISTA COMPLETA */
+  .vista-completa-banner{
+    background:var(--bg-header-linear-2);
+    border:1px solid var(--arena);
+    border-radius:4px;
+    padding:12px;
+    margin-bottom:14px;
+    text-align:center;
+    color:var(--txt-header);
+    font-size:12px;
+    letter-spacing:1px;
+  }
+  .vista-completa-banner b{display:block;font-size:14px;margin-bottom:6px;}
+  .btn-completo{
+    background:var(--arena);color:var(--verde-osc);
+    border:none;padding:10px 18px;
+    border-radius:3px;font-weight:700;
+    font-size:12px;letter-spacing:1px;
+    text-transform:uppercase;cursor:pointer;
+    margin-top:8px;
+  }
+  .btn-completo:hover{background:#e0d9b8;}
 </style>
 </head>
 <body>
 
 <header class="main-header">
+  <div class="header-tools">
+    <button class="tool-btn" id="btnTema" title="Cambiar tema">🌙</button>
+    <button class="tool-btn" id="btnFull" title="Vista completa">📋</button>
+  </div>
   <h1>Control de Activos Fijos y Fungibles</h1>
   <small>DIV-10 · SISTEMA DE CONSULTA</small>
 </header>
@@ -191,12 +319,13 @@
 /* ============================================================
    CONFIGURACIÓN
    ============================================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbyUwEQTPO-KuRhBrioJPXz9Im7H2OVRbA3yiPsSuAcs_VlSPO8IvT8wsNZEBv64ki_B/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz6yhDzMoFa11ohQ1rz2p3fp--wzeypJ94AI3mgmM7iqwv0h08lTctoBfJpik7l1KOxJw/exec";
 
 const FUENTES = {
-  fijos:     "1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w",
-  fungibles: "15m3IcYLXZPd70tbXkWR9fx7WT6DXVNPwIzxH--12-nY",
-  sector:    "1aWAJYEUz313JgcAsPYYGM2wQLUjP_9LCsiIe2lAQ5so"
+  fijos:     { id:"1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w", nombre:"FIJOS",                editUrl:"https://docs.google.com/spreadsheets/d/1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w/edit" },
+  fungibles: { id:"15m3IcYLXZPd70tbXkWR9fx7WT6DXVNPwIzxH--12-nY", nombre:"FUNGIBLES",            editUrl:"https://docs.google.com/spreadsheets/d/15m3IcYLXZPd70tbXkWR9fx7WT6DXVNPwIzxH--12-nY/edit" },
+  sector:    { id:"1aWAJYEUz313JgcAsPYYGM2wQLUjP_9LCsiIe2lAQ5so", nombre:"SECTOR",               editUrl:"https://docs.google.com/spreadsheets/d/1aWAJYEUz313JgcAsPYYGM2wQLUjP_9LCsiIe2lAQ5so/edit" },
+  prestados: { id:"1tANUCBXaWH-jNQDjKrNoE7yIi-m4j0aPkf00uxcivd0", nombre:"ARTÍCULOS PRESTADOS", editUrl:"https://docs.google.com/spreadsheets/d/1tANUCBXaWH-jNQDjKrNoE7yIi-m4j0aPkf00uxcivd0/edit" }
 };
 
 /* ============================================================
@@ -241,13 +370,14 @@ function toObjects(rows){
 /* ============================================================
    CARGA DE DATOS
    ============================================================ */
-const DATA = { fijos: [], fungibles: [], sector: [] };
+const DATA = { fijos: [], fungibles: [], sector: [], prestados: [] };
 
 async function cargarTodo(){
   await Promise.all([
-    cargar("fijos", FUENTES.fijos),
-    cargar("fungibles", FUENTES.fungibles),
-    cargar("sector", FUENTES.sector)
+    cargar("fijos",     FUENTES.fijos.id),
+    cargar("fungibles", FUENTES.fungibles.id),
+    cargar("sector",    FUENTES.sector.id),
+    cargar("prestados", FUENTES.prestados.id)
   ]);
 }
 
@@ -265,6 +395,7 @@ async function cargar(key, fileId){
     const rows = parseCSV(texto);
     DATA[key] = toObjects(rows);
     console.log(`✔ ${key}: ${DATA[key].length} registros`);
+    if(DATA[key][0]) console.log(`   Columnas ${key}:`, Object.keys(DATA[key][0]));
   }catch(e){
     console.warn(`✖ Error cargando ${key}:`, e.message);
     DATA[key] = [];
@@ -301,74 +432,82 @@ function renderEstado(val){
 }
 
 /* ============================================================
-   IDENTIFICAR RESPONSABLE Y CARGO DE UN REGISTRO
+   IDENTIFICAR RESPONSABLE Y CARGO
    ============================================================ */
+const CAMPOS_NOMBRE = [
+  "GRADO NOMBRES", "GRADO NOMBRE", "NOMBRES", "NOMBRE",
+  "RESPONSABLE", "NOMBRES Y APELLIDOS", "APELLIDOS Y NOMBRES",
+  "GRADO Y NOMBRE", "GRADO NOMBRES Y APELLIDOS"
+];
 function getResponsable(obj){
-  return (obj["GRADO NOMBRES"] || obj["RESPONSABLE"] || obj["NOMBRES"] || "").trim();
+  for(const campo of CAMPOS_NOMBRE){
+    if(obj[campo] && obj[campo].toString().trim()) return obj[campo].toString().trim();
+  }
+  for(const k of Object.keys(obj)){
+    if(k.toUpperCase().includes("NOMBRE") && obj[k] && obj[k].toString().trim()){
+      return obj[k].toString().trim();
+    }
+  }
+  return "";
 }
-function getCargo(obj){
-  return (obj["CARGO"] || "").trim();
-}
+function getCargo(obj){ return (obj["CARGO"] || "").trim(); }
 
 /* ============================================================
-   PASO 1: BUSCAR RESPONSABLES ÚNICOS
+   BUSCAR RESPONSABLES ÚNICOS
    ============================================================ */
 function buscarResponsables(termino){
   const t = norm(termino);
   if(t.length < 2) return [];
 
-  // Mapa para agrupar por nombre único (normalizado)
   const mapa = new Map();
-
   function escanear(lista){
     lista.forEach(o => {
       const nombreRaw = getResponsable(o);
       if(!nombreRaw) return;
       if(!norm(nombreRaw).includes(t)) return;
-
       const clave = norm(nombreRaw);
       if(!mapa.has(clave)){
-        mapa.set(clave, {
-          nombre: nombreRaw,
-          cargo: getCargo(o),
-          fijos: 0,
-          fungibles: 0,
-          sector: 0
-        });
+        mapa.set(clave, { nombre: nombreRaw, cargo: getCargo(o) });
       }
     });
   }
-
   escanear(DATA.fijos);
   escanear(DATA.fungibles);
   escanear(DATA.sector);
+  escanear(DATA.prestados);
 
-  // Contar bienes de cada responsable
   const lista = Array.from(mapa.values());
   lista.forEach(r => {
     const clave = norm(r.nombre);
-    r.fijos = DATA.fijos.filter(o => norm(getResponsable(o)) === clave).length;
-    r.fungibles = DATA.fungibles.filter(o => norm(getResponsable(o)) === clave).length;
-    r.sector = DATA.sector.filter(o => norm(getResponsable(o)) === clave).length;
+    const contar = (arr) => arr.filter(o => norm(getResponsable(o)) === clave).length;
+    r.fijos     = contar(DATA.fijos);
+    r.fungibles = contar(DATA.fungibles);
+    r.sector    = contar(DATA.sector);
+    r.prestados = contar(DATA.prestados);
   });
-
-  // Ordenar alfabéticamente
   lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
   return lista;
 }
 
 /* ============================================================
-   RENDER — PASO 1: LISTA DE RESPONSABLES
+   RENDER — LISTA DE RESPONSABLES
    ============================================================ */
 function renderListaResponsables(termino){
   const cont = document.getElementById("resultado");
   const lista = buscarResponsables(termino);
 
   if(norm(termino).length < 2){
-    cont.innerHTML = `<div class="info-inicial">
-      <div class="icon">🎖️</div>
-      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
-    </div>`;
+    cont.innerHTML = `
+      <div class="vista-completa-banner">
+        <b>🎖️ CONSULTA PATRIMONIAL</b>
+        Busque un responsable o vea todo el inventario
+        <br>
+        <button class="btn-completo" onclick="renderVistaCompleta()">📋 VER TODOS LOS BIENES</button>
+      </div>
+      <div class="info-inicial">
+        <div class="icon">🔍</div>
+        INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+      </div>`;
     return;
   }
 
@@ -382,11 +521,10 @@ function renderListaResponsables(termino){
 
   let html = `<div class="lista-responsables">
     <div class="titulo-lista">${lista.length} responsable(s) encontrado(s)</div>`;
-
   lista.forEach((r, idx) => {
-    const total = r.fijos + r.fungibles + r.sector;
+    const total = r.fijos + r.fungibles + r.sector + r.prestados;
     html += `
-      <div class="resp-item" data-idx="${idx}" onclick="seleccionarResponsable(${idx})">
+      <div class="resp-item" onclick="seleccionarResponsable(${idx})">
         <div class="resp-item-info">
           <div class="resp-item-nombre">🎖️ ${esc(r.nombre)}</div>
           <div class="resp-item-cargo">${esc(r.cargo || "SIN CARGO")} · ${total} bien(es)</div>
@@ -394,16 +532,13 @@ function renderListaResponsables(termino){
         <div class="resp-item-flecha">›</div>
       </div>`;
   });
-
   html += `</div>`;
   cont.innerHTML = html;
-
-  // Guardar en variable global para uso del onclick
   window.__listaActual = lista;
 }
 
 /* ============================================================
-   RENDER — PASO 2: DETALLE DEL RESPONSABLE SELECCIONADO
+   RENDER — DETALLE
    ============================================================ */
 function seleccionarResponsable(idx){
   const lista = window.__listaActual || [];
@@ -411,11 +546,14 @@ function seleccionarResponsable(idx){
   if(!responsable) return;
 
   const clave = norm(responsable.nombre);
-  const fijos     = DATA.fijos.filter(o => norm(getResponsable(o)) === clave);
-  const fungibles = DATA.fungibles.filter(o => norm(getResponsable(o)) === clave);
-  const sector    = DATA.sector.filter(o => norm(getResponsable(o)) === clave);
+  const filtrar = (arr) => arr.filter(o => norm(getResponsable(o)) === clave);
 
-  renderDetalle(responsable, { fijos, fungibles, sector });
+  renderDetalle(responsable, {
+    fijos:     filtrar(DATA.fijos),
+    fungibles: filtrar(DATA.fungibles),
+    sector:    filtrar(DATA.sector),
+    prestados: filtrar(DATA.prestados)
+  });
 }
 
 function agruparPorOficina(lista){
@@ -428,11 +566,15 @@ function agruparPorOficina(lista){
   return mapa;
 }
 
-function tablaHTML(titulo, lista, columnas){
-  let html = `<div class="tabla-seccion">
+function tablaHTML(titulo, lista, columnas, keyFuente){
+  const infoFuente = keyFuente ? FUENTES[keyFuente] : null;
+  let html = `<div class="tabla-seccion ${keyFuente === 'prestados' ? 'prestados' : ''}">
     <div class="tabla-titulo">
-      <span>${titulo}</span>
-      <span class="count">${lista.length}</span>
+      <span class="titulo-left">${titulo}</span>
+      <span class="tabla-tools">
+        ${infoFuente ? `<a class="mini-btn" href="${infoFuente.editUrl}" target="_blank" rel="noopener" title="Editar en Google Sheets">✏️ EDITAR</a>` : ``}
+        <span class="count">${lista.length}</span>
+      </span>
     </div>`;
 
   if(!lista.length){
@@ -470,30 +612,34 @@ function renderDetalle(responsable, datos){
       ${responsable.cargo ? `<div class="cargo">${esc(responsable.cargo)}</div>` : ``}
     </div>`;
 
-  /* FIJOS */
   html += tablaHTML("FIJOS", datos.fijos, [
     {label:"CODIGOVSIAF", key:"CODIGOVSIAF"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"COSTO", key:"COSTO"},
     {label:"ESTADO", key:"ESTADO", render:"estado"}
-  ]);
+  ], "fijos");
 
-  /* FUNGIBLES */
   html += tablaHTML("FUNGIBLES", datos.fungibles, [
     {label:"CÓDIGO", key:"CODIGO"},
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"VALOR TOTAL", key:"VALOR TOTAL"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"}
-  ]);
+  ], "fungibles");
 
-  /* SECTOR */
   html += tablaHTML("SECTOR", datos.sector, [
     {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
     {label:"CANTIDAD", key:"CANTIDAD"},
     {label:"ESTADO", key:"ESTADO", render:"estado"},
     {label:"OBS", key:"OBS"}
-  ]);
+  ], "sector");
+
+  html += tablaHTML("ARTÍCULOS PRESTADOS", datos.prestados, [
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"},
+    {label:"OBS", key:"OBS"}
+  ], "prestados");
 
   cont.innerHTML = html;
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -505,31 +651,108 @@ function volverALista(){
 }
 
 /* ============================================================
+   VISTA COMPLETA (todas las tablas sin filtro)
+   ============================================================ */
+function renderVistaCompleta(){
+  const cont = document.getElementById("resultado");
+
+  let html = `
+    <button class="btn-volver" onclick="volverALista()">← Volver al buscador</button>
+    <div class="resp-card">
+      <div class="nombre">📋 INVENTARIO GENERAL — TODOS LOS BIENES</div>
+      <div class="cargo">FIJOS · FUNGIBLES · SECTOR · PRESTADOS</div>
+    </div>`;
+
+  html += tablaHTML("FIJOS", DATA.fijos, [
+    {label:"CODIGOVSIAF", key:"CODIGOVSIAF"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"COSTO", key:"COSTO"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"}
+  ], "fijos");
+
+  html += tablaHTML("FUNGIBLES", DATA.fungibles, [
+    {label:"CÓDIGO", key:"CODIGO"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"VALOR TOTAL", key:"VALOR TOTAL"},
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"}
+  ], "fungibles");
+
+  html += tablaHTML("SECTOR", DATA.sector, [
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"},
+    {label:"OBS", key:"OBS"}
+  ], "sector");
+
+  html += tablaHTML("ARTÍCULOS PRESTADOS", DATA.prestados, [
+    {label:"CANTIDAD", key:"CANTIDAD"},
+    {label:"DESCRIPCIÓN DEL ACTIVO", key:"DESCRIPCION DEL ACTIVO"},
+    {label:"ESTADO", key:"ESTADO", render:"estado"},
+    {label:"OBS", key:"OBS"}
+  ], "prestados");
+
+  cont.innerHTML = html;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ============================================================
+   MODO OSCURO / CLARO
+   ============================================================ */
+function initTema(){
+  const btn = document.getElementById("btnTema");
+  const guardado = localStorage.getItem("tema");
+  if(guardado === "dark"){
+    document.body.classList.add("dark");
+    btn.textContent = "☀️";
+  }
+  btn.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    const esDark = document.body.classList.contains("dark");
+    btn.textContent = esDark ? "☀️" : "🌙";
+    localStorage.setItem("tema", esDark ? "dark" : "light");
+  });
+}
+
+/* ============================================================
    INICIALIZACIÓN
    ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
+  initTema();
+
   const cont = document.getElementById("resultado");
   cont.innerHTML = `<div class="loading">⏳ CARGANDO BASE DE DATOS...</div>`;
 
   await cargarTodo();
 
   const errores = [];
-  if(!DATA.fijos.length) errores.push("FIJOS");
+  if(!DATA.fijos.length)     errores.push("FIJOS");
   if(!DATA.fungibles.length) errores.push("FUNGIBLES");
-  if(!DATA.sector.length) errores.push("SECTOR");
+  if(!DATA.sector.length)    errores.push("SECTOR");
+  if(!DATA.prestados.length) errores.push("PRESTADOS");
 
-  if(errores.length === 3){
+  if(errores.length === 4){
     cont.innerHTML = `<div class="error">
       ⚠️ NO SE PUDO CARGAR NINGÚN ARCHIVO<br><br>
       Revise la consola (F12) para ver detalles.
     </div>`;
   } else {
-    cont.innerHTML = `<div class="info-inicial">
-      <div class="icon">🎖️</div>
-      INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
-      ${errores.length ? `<br><br><small style="color:#c0392b">⚠️ Sin datos: ${errores.join(", ")}</small>` : ""}
-    </div>`;
+    cont.innerHTML = `
+      <div class="vista-completa-banner">
+        <b>🎖️ CONSULTA PATRIMONIAL</b>
+        Busque un responsable o vea todo el inventario
+        <br>
+        <button class="btn-completo" onclick="renderVistaCompleta()">📋 VER TODOS LOS BIENES</button>
+      </div>
+      <div class="info-inicial">
+        <div class="icon">🔍</div>
+        INGRESE UN NOMBRE PARA CONSULTAR LOS ACTIVOS A CARGO
+        ${errores.length ? `<br><br><small style="color:#c0392b">⚠️ Sin datos: ${errores.join(", ")}</small>` : ""}
+      </div>`;
   }
+
+  // Botón "Vista completa" del header
+  document.getElementById("btnFull").addEventListener("click", renderVistaCompleta);
 
   const input = document.getElementById("buscador");
   let timer;
