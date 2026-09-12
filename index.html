@@ -64,16 +64,45 @@
     text-align:center;font-size:11px;color:var(--arena);
     margin-top:6px;letter-spacing:1px;
   }
+
+  /* ============================================================
+     BOTONES DE VISTA GENERAL
+     ============================================================ */
   .botones-vista{
     display:grid;grid-template-columns:repeat(4,1fr);
     gap:6px;margin-top:10px;
+    /* Transición suave al ocultar/mostrar */
+    transition:opacity .25s ease, max-height .3s ease;
+    max-height:100px;
+    overflow:hidden;
+    opacity:1;
+  }
+  .botones-vista.oculto{
+    opacity:0;
+    max-height:0;
+    margin-top:0;
+    pointer-events:none;
   }
   .btn-vista{
     background:#2a2a2a;color:#e0d9b8;border:1px solid var(--arena);
-    padding:8px 4px;font-size:10px;letter-spacing:.5px;
+    padding:8px 4px 6px;
+    font-size:10px;letter-spacing:.5px;
     text-transform:uppercase;font-weight:700;border-radius:3px;
-    cursor:pointer;transition:all .15s ease;text-align:center;line-height:1.2;
+    cursor:pointer;transition:all .15s ease;text-align:center;
+    line-height:1.2;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
   }
+  .btn-vista .btn-label{
+    font-size:10px;
+    letter-spacing:.5px;
+  }
+  .btn-vista .btn-count{
+    font-size:14px;
+    font-weight:800;
+    color:var(--arena);
+    letter-spacing:.3px;
+  }
+  .btn-vista.active .btn-count{color:var(--verde-osc);}
   .btn-vista:hover,.btn-vista:active{filter:brightness(1.3);transform:translateY(-1px);}
   .btn-vista.active{background:var(--arena);color:var(--verde-osc);border-color:#fff;}
   .btn-vista[data-tipo="fijos"]{border-left:4px solid var(--color-fijos);}
@@ -82,6 +111,18 @@
   .btn-vista[data-tipo="prestados"]{border-left:4px solid var(--color-prestados);}
 
   #resultado{padding:12px;}
+
+  /* ============================================================
+     ANIMACIÓN SUAVE AL CAMBIAR DE VISTA
+     ============================================================ */
+  .fade-in{
+    animation:fadeInContent .35s ease-out;
+  }
+  @keyframes fadeInContent{
+    from{opacity:0;transform:translateY(8px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
   .resp-card{
     background:var(--gris);color:#fff;padding:12px 14px;
     border-left:5px solid var(--arena);margin-bottom:16px;border-radius:2px;
@@ -117,7 +158,14 @@
     letter-spacing:1px;text-transform:uppercase;
     border-bottom:1px solid var(--verde-claro);
     border-top:1px solid var(--verde-claro);
+    display:flex;justify-content:space-between;align-items:center;
   }
+  .oficina-tag .oficina-count{
+    background:var(--verde-osc);color:var(--arena);
+    font-size:10px;padding:1px 7px;border-radius:8px;
+    font-weight:800;letter-spacing:.3px;
+  }
+
   .tabla-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px;}
   thead th{
@@ -151,6 +199,54 @@
   .estado-regular{background:#8a7a3a;}
   .estado-bueno{background:#3d6b3a;}
   .estado-pendiente{background:var(--rojo);}
+
+  /* ============================================================
+     RESUMEN POR OFICINA (vistas generales)
+     ============================================================ */
+  .resumen-oficinas{
+    background:#f0eee2;
+    border:1px solid var(--verde-claro);
+    border-radius:3px;
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .resumen-oficinas .resumen-titulo{
+    background:linear-gradient(180deg,#5c5644,#3a362a);
+    color:#f2f0e5;
+    padding:6px 12px;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    font-weight:700;
+  }
+  .resumen-oficinas ul{
+    list-style:none;
+    padding:8px 12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px 14px;
+  }
+  .resumen-oficinas li{
+    font-size:12px;
+    color:var(--verde-osc);
+    letter-spacing:.3px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+  }
+  .resumen-oficinas li::before{
+    content:"▸";
+    color:var(--arena);
+    font-weight:700;
+  }
+  .resumen-oficinas li strong{
+    background:var(--verde-osc);
+    color:var(--arena);
+    padding:1px 7px;
+    border-radius:8px;
+    font-size:11px;
+    margin-left:2px;
+  }
 
   .info-inicial{
     text-align:center;padding:40px 20px;color:#5c5644;
@@ -219,11 +315,25 @@
 <div class="search-wrap">
   <input type="text" id="buscador" placeholder="🔍 Buscar por Nombres y Apellidos..." autocomplete="off">
   <div class="search-hint">Escriba el nombre del responsable</div>
-  <div class="botones-vista">
-    <button class="btn-vista" data-tipo="fijos"     onclick="verGeneral('fijos')">Fijos</button>
-    <button class="btn-vista" data-tipo="fungibles" onclick="verGeneral('fungibles')">Fungibles</button>
-    <button class="btn-vista" data-tipo="sector"    onclick="verGeneral('sector')">Sector</button>
-    <button class="btn-vista" data-tipo="prestados" onclick="verGeneral('prestados')">Prestados</button>
+
+  <!-- Botones de vista general (ahora con contadores) -->
+  <div class="botones-vista" id="botonesVista">
+    <button class="btn-vista" data-tipo="fijos" onclick="verGeneral('fijos')">
+      <span class="btn-label">Fijos</span>
+      <span class="btn-count" data-count="fijos">0</span>
+    </button>
+    <button class="btn-vista" data-tipo="fungibles" onclick="verGeneral('fungibles')">
+      <span class="btn-label">Fungibles</span>
+      <span class="btn-count" data-count="fungibles">0</span>
+    </button>
+    <button class="btn-vista" data-tipo="sector" onclick="verGeneral('sector')">
+      <span class="btn-label">Sector</span>
+      <span class="btn-count" data-count="sector">0</span>
+    </button>
+    <button class="btn-vista" data-tipo="prestados" onclick="verGeneral('prestados')">
+      <span class="btn-label">Prestados</span>
+      <span class="btn-count" data-count="prestados">0</span>
+    </button>
   </div>
 </div>
 
@@ -240,7 +350,7 @@
 /* ============================================================
    CONFIGURACIÓN
    ============================================================ */
-const API_URL = "https://script.google.com/macros/s/AKfycbznEnfYJJ6aB-tQ9A7dBBHUaP8P-CED9mVTgiDHlYHENeORQfWNAVzRpZp-0E5T1v2L/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz6yhDzMoFa11ohQ1rz2p3fp--wzeypJ94AI3mgmM7iqwv0h08lTctoBfJpik7l1KOxJw/exec";
 
 const FUENTES = {
   fijos:     "1hGj-Xai2iHo-IqiEC_VEdnJLx0Q0pHyrWns912Dfz6w",
@@ -302,6 +412,7 @@ async function cargarTodo(){
     cargar("sector", FUENTES.sector),
     cargar("prestados", FUENTES.prestados)
   ]);
+  actualizarContadoresBotones();
 }
 
 async function cargar(key, fileId){
@@ -322,6 +433,16 @@ async function cargar(key, fileId){
     console.warn(`✖ Error cargando ${key}:`, e.message);
     DATA[key] = [];
   }
+}
+
+/* ============================================================
+   ACTUALIZAR CONTADORES DE LOS BOTONES
+   ============================================================ */
+function actualizarContadoresBotones(){
+  ["fijos","fungibles","sector","prestados"].forEach(tipo => {
+    const el = document.querySelector(`.btn-count[data-count="${tipo}"]`);
+    if(el) el.textContent = DATA[tipo].length;
+  });
 }
 
 /* ============================================================
@@ -413,7 +534,7 @@ function renderListaResponsables(termino){
   const cont = document.getElementById("resultado");
 
   if(norm(termino).length < 2){
-    cont.innerHTML = `<div class="info-inicial">
+    cont.innerHTML = `<div class="info-inicial fade-in">
       <div class="icon">🎖️</div>
       INGRESE UN NOMBRE O TOQUE UN BOTÓN PARA VER EL INVENTARIO GENERAL
     </div>`;
@@ -423,14 +544,14 @@ function renderListaResponsables(termino){
   const lista = buscarResponsables(termino);
 
   if(!lista.length){
-    cont.innerHTML = `<div class="info-inicial">
+    cont.innerHTML = `<div class="info-inicial fade-in">
       <div class="icon">🔎</div>
       NO SE ENCONTRARON RESPONSABLES PARA "<b>${esc(termino)}</b>"
     </div>`;
     return;
   }
 
-  let html = `<div class="lista-responsables">
+  let html = `<div class="lista-responsables fade-in">
     <div class="titulo-lista">${lista.length} responsable(s) encontrado(s)</div>`;
 
   lista.forEach((r, idx) => {
@@ -458,10 +579,9 @@ function seleccionarResponsable(idx){
   const responsable = lista[idx];
   if(!responsable) return;
 
-  // ✅ Ocultar botones de vistas generales
-  document.querySelectorAll(".btn-vista").forEach(b => {
-    b.style.display = "none";
-  });
+  // Ocultar botones de vistas generales (con transición suave)
+  const botones = document.getElementById("botonesVista");
+  if(botones) botones.classList.add("oculto");
 
   const clave = norm(responsable.nombre);
   const filtrar = (arr) => arr.filter(o => norm(getResponsable(o)) === clave);
@@ -473,13 +593,9 @@ function seleccionarResponsable(idx){
     prestados: filtrar(DATA.prestados)
   });
 }
+
 /* ============================================================
    DEFINICIÓN DE COLUMNAS
-   ------------------------------------------------------------
-   Dos conjuntos:
-   - DETALLE: al seleccionar un responsable (columnas operativas)
-   - GENERAL: en vistas generales (todas las columnas excepto
-              N° / NRO. y OFICINA/SECTOR)
    ============================================================ */
 const COLUMNAS_DETALLE = {
   fijos: [
@@ -544,11 +660,7 @@ const COLUMNAS_GENERAL = {
 };
 
 /* ============================================================
-   RENDER DE TABLA
-   ------------------------------------------------------------
-   opciones:
-   - ocultarSiVacio: si true y lista vacía, no genera NADA
-     (usado para ARTÍCULOS PRESTADOS en detalle por responsable)
+   AGRUPAR POR OFICINA
    ============================================================ */
 function agruparPorOficina(lista){
   const mapa = new Map();
@@ -560,14 +672,14 @@ function agruparPorOficina(lista){
   return mapa;
 }
 
+/* ============================================================
+   RENDER DE TABLA (con contador por oficina)
+   ============================================================ */
 function tablaHTML(titulo, lista, columnas, tipoClase, opciones){
   opciones = opciones || {};
   const clase = tipoClase || "";
 
-  /* Ocultar completamente si está vacío y así se pidió */
-  if(opciones.ocultarSiVacio && !lista.length){
-    return "";
-  }
+  if(opciones.ocultarSiVacio && !lista.length) return "";
 
   let html = `<div class="tabla-seccion ${clase}">
     <div class="tabla-titulo">
@@ -582,7 +694,10 @@ function tablaHTML(titulo, lista, columnas, tipoClase, opciones){
 
   const grupos = agruparPorOficina(lista);
   for(const [oficina, items] of grupos){
-    html += `<div class="oficina-tag">📍 ${esc(oficina)}</div>`;
+    html += `<div class="oficina-tag">
+      <span>📍 ${esc(oficina)}</span>
+      <span class="oficina-count">${items.length}</span>
+    </div>`;
     html += `<div class="tabla-scroll"><table><thead><tr>`;
     columnas.forEach(c => html += `<th>${c.label}</th>`);
     html += `</tr></thead><tbody>`;
@@ -615,12 +730,9 @@ function renderDetalle(responsable, datos){
       ${responsable.cargo ? `<div class="cargo">${esc(responsable.cargo)}</div>` : ``}
     </div>`;
 
-  /* FIJOS, FUNGIBLES y SECTOR: se muestran siempre (con "NO CUENTA..." si vacío) */
   html += tablaHTML("FIJOS", datos.fijos, COLUMNAS_DETALLE.fijos, "fijos");
   html += tablaHTML("FUNGIBLES", datos.fungibles, COLUMNAS_DETALLE.fungibles, "fungibles");
   html += tablaHTML("SECTOR", datos.sector, COLUMNAS_DETALLE.sector, "sector");
-
-  /* ARTÍCULOS PRESTADOS: solo si tiene registros */
   html += tablaHTML(
     "ARTÍCULOS PRESTADOS",
     datos.prestados,
@@ -629,29 +741,28 @@ function renderDetalle(responsable, datos){
     { ocultarSiVacio: true }
   );
 
-  cont.innerHTML = html;
+  cont.innerHTML = `<div class="fade-in">${html}</div>`;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function volverALista(){
-  // ✅ Mostrar botones nuevamente
-  document.querySelectorAll(".btn-vista").forEach(b => {
-    b.style.display = "";
-  });
+  // Mostrar botones nuevamente
+  const botones = document.getElementById("botonesVista");
+  if(botones) botones.classList.remove("oculto");
+
   const input = document.getElementById("buscador");
   renderListaResponsables(input.value);
 }
 
 /* ============================================================
-   VISTAS GENERALES (todas las columnas)
+   VISTAS GENERALES
    ============================================================ */
 function verGeneral(tipo){
   const cont = document.getElementById("resultado");
 
-  // ✅ Asegurar que los botones estén visibles (por si venimos del detalle)
-  document.querySelectorAll(".btn-vista").forEach(b => {
-    b.style.display = "";
-  });
+  // Asegurar botones visibles
+  const botones = document.getElementById("botonesVista");
+  if(botones) botones.classList.remove("oculto");
 
   document.querySelectorAll(".btn-vista").forEach(b => b.classList.remove("active"));
   const botonActivo = document.querySelector(`.btn-vista[data-tipo="${tipo}"]`);
@@ -667,6 +778,22 @@ function verGeneral(tipo){
   const lista = DATA[tipo] || [];
   const titulo = titulos[tipo] || tipo.toUpperCase();
 
+  /* ---------- Resumen por oficina ---------- */
+  let htmlResumen = "";
+  if(lista.length){
+    const grupos = agruparPorOficina(lista);
+    const items = [];
+    // Ordenar oficinas por cantidad descendente
+    const arr = Array.from(grupos.entries()).sort((a,b) => b[1].length - a[1].length);
+    arr.forEach(([ofi, regs]) => {
+      items.push(`<li>${esc(ofi)} <strong>${regs.length}</strong></li>`);
+    });
+    htmlResumen = `<div class="resumen-oficinas">
+      <div class="resumen-titulo">📊 RESUMEN POR OFICINA</div>
+      <ul>${items.join("")}</ul>
+    </div>`;
+  }
+
   let html = `
     <div class="acciones-detalle">
       <button class="btn-volver" onclick="volverALista()">← Volver a resultados</button>
@@ -674,11 +801,12 @@ function verGeneral(tipo){
     <div class="resp-card" style="border-left-color:var(--arena)">
       <div class="nombre">📋 INVENTARIO GENERAL — ${titulo}</div>
       <div class="cargo">Mostrando los ${lista.length} registros totales</div>
-    </div>`;
+    </div>
+    ${htmlResumen}`;
 
   html += tablaHTML(titulo, lista, COLUMNAS_GENERAL[tipo] || [], tipo);
 
-  cont.innerHTML = html;
+  cont.innerHTML = `<div class="fade-in">${html}</div>`;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -695,26 +823,44 @@ document.addEventListener("DOMContentLoaded", async () => {
   if(!DATA.fijos.length) errores.push("FIJOS");
   if(!DATA.fungibles.length) errores.push("FUNGIBLES");
   if(!DATA.sector.length) errores.push("SECTOR");
-  /* PRESTADOS puede estar vacío legítimamente, no lo listamos como error */
 
   if(errores.length === 3){
-    cont.innerHTML = `<div class="error">
+    cont.innerHTML = `<div class="error fade-in">
       ⚠️ NO SE PUDO CARGAR NINGÚN ARCHIVO<br><br>
       Revise la consola (F12) para ver detalles.
     </div>`;
   } else {
-    cont.innerHTML = `<div class="info-inicial">
+    cont.innerHTML = `<div class="info-inicial fade-in">
       <div class="icon">🎖️</div>
       INGRESE UN NOMBRE O TOQUE UN BOTÓN PARA VER EL INVENTARIO GENERAL
       ${errores.length ? `<br><br><small style="color:#c0392b">⚠️ Sin datos: ${errores.join(", ")}</small>` : ""}
     </div>`;
   }
 
+  /* ============================================================
+     LISTENER DEL BUSCADOR
+     ------------------------------------------------------------
+     - Si hay ≥1 carácter: ocultar botones
+     - Si está vacío: mostrar botones
+     ============================================================ */
   const input = document.getElementById("buscador");
+  const botonesWrap = document.getElementById("botonesVista");
   let timer;
+
   input.addEventListener("input", e => {
     clearTimeout(timer);
+    const txt = (e.target.value || "").trim();
+
+    // Quitar el estado "activo" de los botones
     document.querySelectorAll(".btn-vista").forEach(b => b.classList.remove("active"));
+
+    // Mostrar u ocultar botones según contenido
+    if(txt.length >= 1){
+      botonesWrap.classList.add("oculto");
+    } else {
+      botonesWrap.classList.remove("oculto");
+    }
+
     timer = setTimeout(() => renderListaResponsables(e.target.value), 200);
   });
 });
