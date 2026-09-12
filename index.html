@@ -458,6 +458,11 @@ function seleccionarResponsable(idx){
   const responsable = lista[idx];
   if(!responsable) return;
 
+  // ✅ Ocultar botones de vistas generales
+  document.querySelectorAll(".btn-vista").forEach(b => {
+    b.style.display = "none";
+  });
+
   const clave = norm(responsable.nombre);
   const filtrar = (arr) => arr.filter(o => norm(getResponsable(o)) === clave);
 
@@ -468,7 +473,6 @@ function seleccionarResponsable(idx){
     prestados: filtrar(DATA.prestados)
   });
 }
-
 /* ============================================================
    DEFINICIÓN DE COLUMNAS
    ------------------------------------------------------------
@@ -630,6 +634,10 @@ function renderDetalle(responsable, datos){
 }
 
 function volverALista(){
+  // ✅ Mostrar botones nuevamente
+  document.querySelectorAll(".btn-vista").forEach(b => {
+    b.style.display = "";
+  });
   const input = document.getElementById("buscador");
   renderListaResponsables(input.value);
 }
@@ -639,6 +647,11 @@ function volverALista(){
    ============================================================ */
 function verGeneral(tipo){
   const cont = document.getElementById("resultado");
+
+  // ✅ Asegurar que los botones estén visibles (por si venimos del detalle)
+  document.querySelectorAll(".btn-vista").forEach(b => {
+    b.style.display = "";
+  });
 
   document.querySelectorAll(".btn-vista").forEach(b => b.classList.remove("active"));
   const botonActivo = document.querySelector(`.btn-vista[data-tipo="${tipo}"]`);
@@ -663,7 +676,6 @@ function verGeneral(tipo){
       <div class="cargo">Mostrando los ${lista.length} registros totales</div>
     </div>`;
 
-  /* En vista general: sin opción de ocultar, con TODAS las columnas */
   html += tablaHTML(titulo, lista, COLUMNAS_GENERAL[tipo] || [], tipo);
 
   cont.innerHTML = html;
